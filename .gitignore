@@ -1,0 +1,19 @@
+# Onyx-Engine Gitignore
+# Ewan Burnett - 2024
+
+# Ignore Build Files
+[Bb][Uu][Ii][Ll][Dd]/
+[Oo][Uu][Tt]/
+
+[Bb][Ii][Nn]/
+
+[Dd][Oo][Cc][Ss]/html/
+
+# Ignore IDE generated Files
+.vs/
+.cache/
+*.swp
+
+# Ignore compiled shaders
+*.spv
+*.spirv
