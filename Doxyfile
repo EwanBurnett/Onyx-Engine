@@ -61,7 +61,7 @@ PROJECT_BRIEF          = "A 3D Game Engine"
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = F:/Projects/2024/Onyx/Onyx_Logo.ico
+PROJECT_LOGO           = Onyx_Logo.ico
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is

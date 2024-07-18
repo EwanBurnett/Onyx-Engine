@@ -63,3 +63,10 @@ cmake .. -DONYX_BUILD_SAMPLES=ON
 
 ```
 
+## Resource References
+| Resource Path                | Resource Type | Resource Description                    | Source URL                                                                     | Notes                      | License                                                                                                 |
+| - | - | - | - | - | - |
+| /Resources/Onyx_Logo.png     | Texture       | Logo for the Application                | https://www.vecteezy.com/vector-art/5050967-logo-template-with-onyx-rock-image | Modified from Source Image | [Vecteezy Free License](https://www.vecteezy.com/vector-art/5050967-logo-template-with-onyx-rock-image) |
+| /Onyx_Icon.ico               | Icon          | Icon for the Application                | https://www.vecteezy.com/vector-art/5050967-logo-template-with-onyx-rock-image | Modified from Source Image | [Vecteezy Free License](https://www.vecteezy.com/vector-art/5050967-logo-template-with-onyx-rock-image) |
+| /Docs/CSS/DoxygenAwesome.css | CSS           | Stylesheet for HTML Documentation pages | https://jothepro.github.io/doxygen-awesome-css/                                |                            | [MIT License](https://github.com/jothepro/doxygen-awesome-css?tab=MIT-1-ov-file#readme)                 |
+
