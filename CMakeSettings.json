@@ -15,6 +15,11 @@
                     "name": "ONYX_BUILD_TESTBED",
                     "value": "True",
                     "type": "BOOL"
+                },
+                {
+                    "name": "ONYX_BUILD_DOCS",
+                    "value": "true",
+                    "type": "BOOL"
                 }
             ]
         },
