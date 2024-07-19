@@ -11,21 +11,54 @@ const char* platformName = "Linux";
 int main() {
     Onyx::Log::Status("[%s]\tOnyx Version: %s\n", platformName, Onyx::GetVersionString().c_str());
 
-    Onyx::AutoCVar_Bool bSetting("Test.Setting", "A Test CVar", false); 
-    bSetting.Set(true); 
-    bool b = bSetting.Get(); 
+    Onyx::AutoCVar_Bool bSetting("Test.Setting", "A Test CVar", false);
+    bSetting.Set(true);
+    bool b = bSetting.Get();
 
-    Onyx::CVarManager* pManager = Onyx::CVarManager::Get(); 
-    pManager->CreateStringCVar("Test.Greeting", "A Debug Greeting Message to test CVars.", "Hello", "Hello"); 
+    Onyx::AutoCVar_String sSetting("Test.test", "A test CVar", "hey!");
 
-    for (int i = 0; i < 1000; i++) {
-        pManager->CreateIntCVar("Test.Overwriting", "A Debug CVar to test Overwriting values.", 0, i);
+    Onyx::CVarManager* pManager = Onyx::CVarManager::Get();
+    pManager->CreateStringCVar("Test.Greeting", "A Debug Greeting Message to test CVars.", "Hello", "Hello");
+    pManager->CreateStringCVar("Test.Greeting.2", "A Debug Greeting Message to test CVars.", "Hello", "Hello");
+    pManager->CreateStringCVar("Test.Greeting.3", "A Debug Greeting Message to test CVars.", "Hello", "Hello");
+    Onyx::AutoCVar_Bool bSetting2("Test.Greeting.4", "A Test CVar", false);
+
+    for (int i = 0; i < 100; i++) {
+        char buf[0xff];
+        sprintf(buf, "Test.Obj_%d", i);
+        pManager->CreateIntCVar(buf, "A Test CVar", 0, i);
     }
-    const int* val = Onyx::CVarManager::Get()->GetIntCVar("Test.Overwriting");
-    printf("%d", *val); 
+    auto cvars = Onyx::CVarManager::Get()->GetCVarData();
+    for (auto& cvar : cvars) {
+        Onyx::Log::Print("%s\n\t%s\n\t%d\n", cvar.pName->c_str(), cvar.pDescription->c_str(), cvar.type);
+        switch (cvar.type) {
+        case(Onyx::CVarType::BOOL):
+            Onyx::Log::Print("\tInitial Value: %b\n\tCurrent Value: %b\n", *reinterpret_cast<bool*>(cvar.pInitialData), *reinterpret_cast<bool*>(cvar.pCurrentData));
+            break;
+        case(Onyx::CVarType::INT):
+            Onyx::Log::Print("\tInitial Value: %d\n\tCurrent Value: %d\n", *reinterpret_cast<int*>(cvar.pInitialData), *reinterpret_cast<int*>(cvar.pCurrentData));
+            break;
+        case(Onyx::CVarType::FLOAT):
+            Onyx::Log::Print("\tInitial Value: %d\n\tCurrent Value: %d\n", *reinterpret_cast<float*>(cvar.pInitialData), *reinterpret_cast<float*>(cvar.pCurrentData));
+            break; 
+        case(Onyx::CVarType::STRING):
+            Onyx::Log::Print("\tInitial Value: %s\n\tCurrent Value: %s\n", reinterpret_cast<std::string*>(cvar.pInitialData)->c_str(), reinterpret_cast<std::string*>(cvar.pCurrentData)->c_str());
+            break;
+        default:
+            break;
+        }
+    }
 
-    const std::string* greeting = pManager->GetStringCVar("Test.Greeting"); 
-    printf("%s\n", greeting->c_str()); 
+    //std::string sData = *reinterpret_cast<std::string*>(cvars.at(0x65).pCurrentData)        ; 
+
+
+    const int* val = Onyx::CVarManager::Get()->GetIntCVar("Test.Overwriting");
+    if (val) {
+        printf("%d", *val);
+    }
+
+    const std::string* greeting = pManager->GetStringCVar("Test.Greeting");
+    printf("%s\n", greeting->c_str());
 
     //Logs to stdout by default. 
     printf("This is printf!\n");

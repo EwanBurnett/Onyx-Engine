@@ -1,34 +1,27 @@
 #include "Onyx/Core/CVar.h"
 #include <unordered_map>
+#include <algorithm>
 #include <string> 
 #include <mutex>
 #include <shared_mutex>
 
 namespace Onyx {
 
-    enum class CVarType : char {
-        NONE = 0,
-        BOOL,
-        INT,
-        FLOAT,
-        STRING
-    };
-
     class CVarParameter {
     public:
         friend class CVarManagerImpl;
 
-        int32_t arrayIndex;     //Index into CVarArray for the current type
+        int32_t arrayIndex = -1;     //Index into CVarArray for the current type
 
-        CVarType type;
+        CVarType type = CVarType::NONE;
         std::string name;
         std::string description;
     };
 
     template<typename T>
     struct CVarStorage {
-        T initial;
-        T current;
+        T initial = {};
+        T current = {};
         CVarParameter* parameter = nullptr;
     };
 
@@ -73,6 +66,8 @@ namespace Onyx {
         CVarParameter* CreateIntCVar(const char* name, const char* description, const int defaultValue, const int currentValue) override final;
         CVarParameter* CreateFloatCVar(const char* name, const char* description, const float defaultValue, const float currentValue) override final;
         CVarParameter* CreateStringCVar(const char* name, const char* description, const std::string& defaultValue, const std::string& currentValue) override final;
+
+        std::vector<CVarData> GetCVarData() const override final;
 
 
     private:
@@ -238,6 +233,66 @@ Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateStringCVar(const char* name, c
     GetCVarArray<std::string>()->Add(defaultValue, currentValue, param);
 
     return param;
+}
+
+std::vector<Onyx::CVarData> Onyx::CVarManagerImpl::GetCVarData() const
+{
+    std::vector<CVarData> cvars;
+
+    for (int i = 0; i < m_BoolCVars.m_LastCVar; i++) {
+        const CVarData data = {
+            &m_BoolCVars.m_CVars[i].parameter->name,
+            &m_BoolCVars.m_CVars[i].parameter->description,
+            CVarType::BOOL,
+            &m_BoolCVars.m_CVars[i].initial,
+            &m_BoolCVars.m_CVars[i].current
+        };
+
+        cvars.push_back(data);
+    }
+
+    for (int i = 0; i < m_IntCVars.m_LastCVar; i++) {
+        const CVarData data = {
+            &m_IntCVars.m_CVars[i].parameter->name,
+            &m_IntCVars.m_CVars[i].parameter->description,
+            CVarType::INT,
+            &m_IntCVars.m_CVars[i].initial,
+            &m_IntCVars.m_CVars[i].current
+        };
+
+        cvars.push_back(data);
+    }
+
+    for (int i = 0; i < m_FloatCVars.m_LastCVar; i++) {
+        const CVarData data = {
+            &m_FloatCVars.m_CVars[i].parameter->name,
+            &m_FloatCVars.m_CVars[i].parameter->description,
+            CVarType::FLOAT,
+            &m_FloatCVars.m_CVars[i].initial,
+            &m_FloatCVars.m_CVars[i].current
+        };
+
+        cvars.push_back(data);
+    }
+
+    for (int i = 0; i < m_StringCVars.m_LastCVar; i++) {
+        const CVarData data = {
+            &m_StringCVars.m_CVars[i].parameter->name,
+            &m_StringCVars.m_CVars[i].parameter->description,
+            CVarType::STRING,
+            &m_StringCVars.m_CVars[i].initial,
+            &m_StringCVars.m_CVars[i].current
+        };
+
+        cvars.push_back(data);
+    }
+
+    std::sort(cvars.begin(), cvars.end(), [](const CVarData& a, const CVarData& b) {
+        return *a.pName < *b.pName;
+        });
+
+    return cvars;
+
 }
 
 Onyx::CVarParameter* Onyx::CVarManagerImpl::GetCVar(const std::string& name)

@@ -3,8 +3,32 @@
 
 #include <cstdint>
 #include <string> 
+#include <vector> 
 
 namespace Onyx {
+
+    enum class CVarType : char {
+        NONE = 0,
+        BOOL,
+        INT,
+        FLOAT,
+        STRING
+    };
+
+    struct CVarData {
+        void operator = (const CVarData& cvar) {
+            this->pName = cvar.pName; 
+            this->pDescription = cvar.pDescription;
+            this->type = cvar.type; 
+            this->pCurrentData = cvar.pCurrentData; 
+            this->pInitialData = cvar.pInitialData;
+        }
+        const std::string* pName;
+        const std::string* pDescription;
+        CVarType type; 
+        void* pInitialData; 
+        void* pCurrentData; 
+    };
 
     class CVarParameter; 
 
@@ -33,6 +57,7 @@ namespace Onyx {
         virtual CVarParameter* CreateFloatCVar(const char* name, const char* description, const float defaultValue, const float currentValue) = 0;
         virtual CVarParameter* CreateStringCVar(const char* name, const char* description, const std::string& defaultValue, const std::string& currentValue) = 0;
 
+        virtual std::vector<CVarData> GetCVarData() const = 0; 
     protected:
         constexpr static int MAX_BOOL_CVARS = 1000; 
         constexpr static int MAX_INT_CVARS = 1000; 
