@@ -4,14 +4,14 @@
 * @warning DO NOT MODIFY
 */
 
-#include "Onyx/Version.h"
+#include "Onyx/Core/Version.h"
 #include <cstdio>
 
 namespace Onyx{
-    const int ONYX_GIT_HASH = 0x@GIT_HASH@;
-    const int ONYX_VERSION_MAJOR = @ONYX_VERSION_MAJOR@;
-    const int ONYX_VERSION_MINOR = @ONYX_VERSION_MINOR@;
-    const int ONYX_VERSION_ISSUE = @ONYX_VERSION_ISSUE@;
+    const int ONYX_GIT_HASH = 0x737fb0e;
+    const int ONYX_VERSION_MAJOR = 0;
+    const int ONYX_VERSION_MINOR = 0;
+    const int ONYX_VERSION_ISSUE = 1;
 }
 
 std::string Onyx::GetVersionString(){

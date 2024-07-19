@@ -1,6 +1,8 @@
 #ifndef ONYX_H
 #define ONYX_H
 
-#include "Onyx/Version.h"
+#include "Onyx/Core/Version.h"
+#include "Onyx/Core/Logger.h"
+#include "Onyx/Core/Utility.h"
 
 #endif

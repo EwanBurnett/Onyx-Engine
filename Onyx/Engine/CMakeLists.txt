@@ -1,8 +1,8 @@
 project("Onyx-Engine")
 message(STATUS "Building Onyx Engine v${ONYX_VERSION_MAJOR}.${ONYX_VERSION_MINOR}.${ONYX_VERSION_ISSUE} [${GIT_HASH}]")
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/Version.cpp.in" "${CMAKE_CURRENT_SOURCE_DIR}/src/Version.cpp" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Version.cpp.in" "${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Version.cpp" @ONLY)
 
-add_library(${PROJECT_NAME} STATIC "src/Onyx.cpp" "src/Version.cpp")
+add_library(${PROJECT_NAME} STATIC "src/Onyx.cpp" "src/Core/Version.cpp" "include/Onyx/Core/Logger.h" "src/Core/Logger.cpp" "include/Onyx/Core/Utility.h" "src/Core/Utility.cpp")
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 
 set(ONYX_ENGINE_COMPILE_DEFINITIONS )
