@@ -1,5 +1,5 @@
-#ifndef ONYX_UTILITY_H
-#define ONYX_UTILITY_H
+#ifndef ONYX_CORE_UTILITY_H
+#define ONYX_CORE_UTILITY_H
 
 #ifdef _MSC_VER
 #define __PRETTY_FUNCTION__ __FUNCSIG__

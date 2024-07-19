@@ -1,5 +1,5 @@
-#ifndef ONYX_VERSION_H
-#define ONYX_VERSION_H
+#ifndef ONYX_CORE_VERSION_H
+#define ONYX_CORE_VERSION_H
 /**
 * @file Version.h
 * @brief Contains the Engine's Version Information. 

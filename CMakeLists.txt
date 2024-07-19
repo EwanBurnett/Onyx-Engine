@@ -47,7 +47,7 @@ endif()
 add_subdirectory("${CMAKE_SOURCE_DIR}/Samples/")
 
 
-add_custom_target(UpdateVersionHash COMMAND ${CMAKE_COMMAND} -Dpre_configure_dir=${pre_configure_dir} -Dpost_configure_file=${post_configure_dir} -P "${CMAKE_SOURCE_DIR}/CMake/CheckGitHash.cmake" BYPRODUCTS ${post_configure_file})
+# add_custom_target(UpdateVersionHash COMMAND ${CMAKE_COMMAND} -Dpre_configure_dir=${pre_configure_dir} -Dpost_configure_file=${post_configure_dir} -P "${CMAKE_SOURCE_DIR}/CMake/CheckGitHash.cmake" BYPRODUCTS ${post_configure_file})
 
 # Optionally generate Documentation files
 if(ONYX_BUILD_DOCS)

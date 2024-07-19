@@ -6,6 +6,9 @@
 
 FILE* Onyx::Log::m_Stream = stdout;
 
+/**
+ * @brief Prints a formatted message in White. 
+*/
 void Onyx::Log::Print(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
@@ -13,17 +16,24 @@ void Onyx::Log::Print(const char* fmt, ...) {
     va_end(args);
 }
 
+/**
+  * @brief Only prints when ONYX_DEBUG is defined.
+ */
 void Onyx::Log::Debug(const char* fmt, ...)
 {
 #if ONYX_DEBUG
     va_list args;
     va_start(args, fmt);
+    _Output(ELogColour::LIGHTGREEN, m_Stream, "[Debug] ");
     _Output(ELogColour::LIGHTGREEN, m_Stream, fmt, args);
     va_end(args);
 #endif
 }
 
-void Onyx::Log::Message(const char* fmt, ...)
+/**
+ * @brief Prints a Status message. 
+*/
+void Onyx::Log::Status(const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
@@ -31,6 +41,11 @@ void Onyx::Log::Message(const char* fmt, ...)
     va_end(args);
 }
 
+/**
+ * @brief Prints a Success message.
+ * @param fmt 
+ * @param  
+*/
 void Onyx::Log::Success(const char* fmt, ...)
 {
     va_list args;
@@ -39,6 +54,9 @@ void Onyx::Log::Success(const char* fmt, ...)
     va_end(args);
 }
 
+/**
+ * @brief Prints a Failure message.
+*/
 void Onyx::Log::Failure(const char* fmt, ...)
 {
     va_list args;
@@ -47,14 +65,24 @@ void Onyx::Log::Failure(const char* fmt, ...)
     va_end(args);
 }
 
+/**
+ * @brief Prints a Warning Message.
+*/
 void Onyx::Log::Warning(const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
+    _Output(ELogColour::YELLOW, m_Stream, "Warning\n");
     _Output(ELogColour::YELLOW, m_Stream, fmt, args);
     va_end(args);
 }
 
+/**
+ * @brief Prints an Error message.
+ * @param file The caller file. Pass `__FILE__`.
+ * @param line The caller line. Pass `__LINE__`.
+ * @param function The caller function. Pass `__PRETTY_FUNCTION__`.
+*/
 void Onyx::Log::Error(const char* file, int line, const char* function, const char* fmt, ...)
 {
     va_list args;
@@ -68,6 +96,12 @@ void Onyx::Log::Error(const char* file, int line, const char* function, const ch
     va_end(args);
 }
 
+/**
+ * @brief Prints a Fatal Error message. This also triggers a Breakpoint. 
+ * @param file The caller file. Pass `__FILE__`.
+ * @param line The caller line. Pass `__LINE__`.
+ * @param function The caller function. Pass `__PRETTY_FUNCTION__`.
+*/
 void Onyx::Log::Fatal(const char* file, int line, const char* function, const char* fmt, ...)
 {
     va_list args;

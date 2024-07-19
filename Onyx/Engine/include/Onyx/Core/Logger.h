@@ -1,5 +1,5 @@
-#ifndef ONYX_LOGGER_H
-#define ONYX_LOGGER_H
+#ifndef ONYX_CORE_LOGGER_H
+#define ONYX_CORE_LOGGER_H
 /**
 * @file Logger.h
 * @brief A Collection of Console Logging Utilities.
@@ -40,7 +40,7 @@ namespace Onyx {
 
         static void Print(const char* fmt, ...);
         static void Debug(const char* fmt, ...);
-        static void Message(const char* fmt, ...);
+        static void Status(const char* fmt, ...);
         static void Success(const char* fmt, ...);
         static void Failure(const char* fmt, ...);
         static void Warning(const char* fmt, ...);
