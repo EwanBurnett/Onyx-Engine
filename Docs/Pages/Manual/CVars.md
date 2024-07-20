@@ -1,5 +1,5 @@
-# Console Variables
-
+Console Variables {#CVars}
+===
 A Console Variable is a Globally accessible value stored by the engine, mapped to a String. These values are of simple data types (`bool`, `float`, `int`, `string`), and can be loaded or changed during runtime. These variables can store any state, and as such should be used for Configuration. See `CVar.h`. 
 
 Some examples include: 
@@ -111,4 +111,12 @@ note: as data handles are stored as `void*`, they must be `reinterpret_cast` int
 | Console Variable | Description | Type | Default Value | 
 | - | - | - | - |
 | `Editor.Debug.LogFile` | | | |
+
+<div class="section_buttons">
+ 
+| Previous          |                              Next |
+|:------------------|----------------------------------:|
+| [Logging](Logging.md) | [Maths](Maths.md) |
+ 
+</div>
 

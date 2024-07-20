@@ -1,4 +1,5 @@
-# Logging
+Logging {#Logging}
+===
 Output can be logged to any `FILE*` stream through the `Onyx::Log` class (`Onyx/Core/Logger.h`).
 By default, Log output is directed to `stdout`.  
 The `FILE*` stream can be changed via `Onyx::Log::SetOutputStream()`. 
@@ -72,3 +73,11 @@ FILE: F:\Projects\2024\Onyx\Testbed\main.cpp
 	FUNCTION: int __cdecl main(void)
 This Fatal Error message will be printed to both stderr and to a file!
 ```
+
+<div class="section_buttons">
+ 
+| Previous          |                              Next |
+|:------------------|----------------------------------:|
+| [Logging](Logging.md) | [Console Variables](CVars.md) |
+ 
+</div>
