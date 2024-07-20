@@ -5,6 +5,29 @@
 #include <mutex>
 #include <shared_mutex>
 
+#define AUTOCVAR_IMPLEMENTATION(T, CVarType)\
+\
+Onyx::AutoCVar_##CVarType::AutoCVar_##CVarType(const char* name, const char* description, T defaultValue)\
+{\
+    CVarParameter* param = CVarManager::Get()->CreateCVar_##CVarType(name, description, defaultValue, defaultValue);\
+    index = param->arrayIndex;\
+}\
+\
+T Onyx::AutoCVar_##CVarType::Get()\
+{\
+    return GetCurrentCVarByIndex<T>(index);\
+}\
+\
+T* Onyx::AutoCVar_##CVarType::GetPtr()\
+{\
+    return PtrGetCurrentCVarByIndex<T>(index);\
+}\
+\
+void Onyx::AutoCVar_##CVarType::Set(const T value)\
+{\
+    return SetCurrentCVarByIndex<T>(index, value);\
+}\
+
 namespace Onyx {
 
     class CVarParameter {
@@ -50,37 +73,28 @@ namespace Onyx {
         ~CVarManagerImpl();
 
         // Inherited via CVarManager
-        const bool* GetBoolCVar(const std::string& name) override final;
-        void SetBoolCVar(const std::string& name, const bool value) override final;
+        const bool* GetCVar_Bool(const std::string& name) override final;
+        void SetCVar_Bool(const std::string& name, const bool value) override final;
+        CVarParameter* CreateCVar_Bool(const char* name, const char* description, const bool defaultValue, const bool currentValue) override final;
+        CVarArray<bool> m_CVars_Bool{ MAX_BOOL_CVARS };
 
-        const int* GetIntCVar(const std::string& name) override final;
-        void SetIntCVar(const std::string& name, const int value) override final;
+        const int* GetCVar_Int(const std::string& name) override final;
+        void SetCVar_Int(const std::string& name, const int value) override final;
+        CVarParameter* CreateCVar_Int(const char* name, const char* description, const int defaultValue, const int currentValue) override final;
+        CVarArray<int> m_CVars_Int{ MAX_INT_CVARS };
 
-        const float* GetFloatCVar(const std::string& name) override final;
-        void SetFloatCVar(const std::string& name, const float value) override final;
+        const float* GetCVar_Float(const std::string& name) override final;
+        void SetCVar_Float(const std::string& name, const float value) override final;
+        CVarParameter* CreateCVar_Float(const char* name, const char* description, const float defaultValue, const float currentValue) override final;
+        CVarArray<float> m_CVars_Float{ MAX_FLOAT_CVARS };
 
-        const std::string* GetStringCVar(const std::string& name) override final;
-        void SetStringCVar(const std::string& name, const std::string& value) override final;
+        const std::string* GetCVar_String(const std::string& name) override final;
+        void SetCVar_String(const std::string& name, const std::string& value) override final;
+        CVarParameter* CreateCVar_String(const char* name, const char* description, const std::string& defaultValue, const std::string& currentValue) override final;
+        CVarArray<std::string> m_CVars_String{ MAX_STRING_CVARS };
 
-        CVarParameter* CreateBoolCVar(const char* name, const char* description, const bool defaultValue, const bool currentValue) override final;
-        CVarParameter* CreateIntCVar(const char* name, const char* description, const int defaultValue, const int currentValue) override final;
-        CVarParameter* CreateFloatCVar(const char* name, const char* description, const float defaultValue, const float currentValue) override final;
-        CVarParameter* CreateStringCVar(const char* name, const char* description, const std::string& defaultValue, const std::string& currentValue) override final;
 
         std::vector<CVarData> GetCVarData() const override final;
-
-
-    private:
-        CVarArray<bool> m_BoolCVars{ MAX_BOOL_CVARS };
-        CVarArray<int> m_IntCVars{ MAX_INT_CVARS };
-        CVarArray<float> m_FloatCVars{ MAX_FLOAT_CVARS };
-        CVarArray<std::string> m_StringCVars{ MAX_STRING_CVARS };
-
-        std::unordered_map<std::string, CVarParameter> m_CVars;
-
-        std::shared_mutex m_Mutex;
-
-    public:
 
         template<typename T>
         CVarArray<T>* GetCVarArray();
@@ -96,6 +110,10 @@ namespace Onyx {
         void SetCurrentCVar(const std::string& name, const T& value);
 
         static CVarManagerImpl* Get();
+
+    private:
+        std::unordered_map<std::string, CVarParameter> m_CVars;
+        std::shared_mutex m_Mutex;
 
     };
 }
@@ -116,66 +134,66 @@ Onyx::CVarArray<T>* Onyx::CVarManagerImpl::GetCVarArray() {
 
 template<>
 Onyx::CVarArray<int>* Onyx::CVarManagerImpl::GetCVarArray<int>() {
-    return &m_IntCVars;
+    return &m_CVars_Int;
 }
 
 template<>
 Onyx::CVarArray<float>* Onyx::CVarManagerImpl::GetCVarArray<float>() {
-    return &m_FloatCVars;
+    return &m_CVars_Float;
 }
 
 template<>
 Onyx::CVarArray<bool>* Onyx::CVarManagerImpl::GetCVarArray<bool>() {
-    return &m_BoolCVars;
+    return &m_CVars_Bool;
 }
 
 template<>
 Onyx::CVarArray<std::string>* Onyx::CVarManagerImpl::GetCVarArray<std::string>() {
-    return &m_StringCVars;
+    return &m_CVars_String;
 }
 
 
-const bool* Onyx::CVarManagerImpl::GetBoolCVar(const std::string& name)
+const bool* Onyx::CVarManagerImpl::GetCVar_Bool(const std::string& name)
 {
     return GetCurrentCVar<bool>(name);
 }
 
-void Onyx::CVarManagerImpl::SetBoolCVar(const std::string& name, const bool value)
+void Onyx::CVarManagerImpl::SetCVar_Bool(const std::string& name, const bool value)
 {
     SetCurrentCVar<bool>(name, value);
 }
 
-const int* Onyx::CVarManagerImpl::GetIntCVar(const std::string& name)
+const int* Onyx::CVarManagerImpl::GetCVar_Int(const std::string& name)
 {
     return GetCurrentCVar<int>(name);
 }
 
-void Onyx::CVarManagerImpl::SetIntCVar(const std::string& name, const int value)
+void Onyx::CVarManagerImpl::SetCVar_Int(const std::string& name, const int value)
 {
     SetCurrentCVar<int>(name, value);
 }
 
-const float* Onyx::CVarManagerImpl::GetFloatCVar(const std::string& name)
+const float* Onyx::CVarManagerImpl::GetCVar_Float(const std::string& name)
 {
     return GetCurrentCVar<float>(name);
 }
 
-void Onyx::CVarManagerImpl::SetFloatCVar(const std::string& name, const float value)
+void Onyx::CVarManagerImpl::SetCVar_Float(const std::string& name, const float value)
 {
     SetCurrentCVar<float>(name, value);
 }
 
-const std::string* Onyx::CVarManagerImpl::GetStringCVar(const std::string& name)
+const std::string* Onyx::CVarManagerImpl::GetCVar_String(const std::string& name)
 {
     return GetCurrentCVar<std::string>(name);
 }
 
-void Onyx::CVarManagerImpl::SetStringCVar(const std::string& name, const std::string& value)
+void Onyx::CVarManagerImpl::SetCVar_String(const std::string& name, const std::string& value)
 {
     SetCurrentCVar<std::string>(name, value);
 }
 
-Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateBoolCVar(const char* name, const char* description, const bool defaultValue, const bool currentValue)
+Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateCVar_Bool(const char* name, const char* description, const bool defaultValue, const bool currentValue)
 {
     std::unique_lock<std::shared_mutex> lock(m_Mutex);
     CVarParameter* param = InitCVar(name, description);
@@ -183,14 +201,14 @@ Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateBoolCVar(const char* name, con
         return nullptr;
     }
 
-    param->type = CVarType::BOOL;
+    param->type = CVarType::Bool;
 
     GetCVarArray<bool>()->Add(defaultValue, currentValue, param);
 
     return param;
 }
 
-Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateIntCVar(const char* name, const char* description, const int defaultValue, const int currentValue)
+Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateCVar_Int(const char* name, const char* description, const int defaultValue, const int currentValue)
 {
     std::unique_lock<std::shared_mutex> lock(m_Mutex);
     CVarParameter* param = InitCVar(name, description);
@@ -198,14 +216,14 @@ Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateIntCVar(const char* name, cons
         return nullptr;
     }
 
-    param->type = CVarType::INT;
+    param->type = CVarType::Int;
 
     GetCVarArray<int>()->Add(defaultValue, currentValue, param);
 
     return param;
 }
 
-Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateFloatCVar(const char* name, const char* description, const float defaultValue, const float currentValue)
+Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateCVar_Float(const char* name, const char* description, const float defaultValue, const float currentValue)
 {
     std::unique_lock<std::shared_mutex> lock(m_Mutex);
     CVarParameter* param = InitCVar(name, description);
@@ -213,14 +231,14 @@ Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateFloatCVar(const char* name, co
         return nullptr;
     }
 
-    param->type = CVarType::FLOAT;
+    param->type = CVarType::Float;
 
     GetCVarArray<float>()->Add(defaultValue, currentValue, param);
 
     return param;
 }
 
-Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateStringCVar(const char* name, const char* description, const std::string& defaultValue, const std::string& currentValue)
+Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateCVar_String(const char* name, const char* description, const std::string& defaultValue, const std::string& currentValue)
 {
     std::unique_lock<std::shared_mutex> lock(m_Mutex);
     CVarParameter* param = InitCVar(name, description);
@@ -228,7 +246,7 @@ Onyx::CVarParameter* Onyx::CVarManagerImpl::CreateStringCVar(const char* name, c
         return nullptr;
     }
 
-    param->type = CVarType::STRING;
+    param->type = CVarType::String;
 
     GetCVarArray<std::string>()->Add(defaultValue, currentValue, param);
 
@@ -239,49 +257,49 @@ std::vector<Onyx::CVarData> Onyx::CVarManagerImpl::GetCVarData() const
 {
     std::vector<CVarData> cvars;
 
-    for (int i = 0; i < m_BoolCVars.m_LastCVar; i++) {
+    for (int i = 0; i < m_CVars_Bool.m_LastCVar; i++) {
         const CVarData data = {
-            &m_BoolCVars.m_CVars[i].parameter->name,
-            &m_BoolCVars.m_CVars[i].parameter->description,
-            CVarType::BOOL,
-            &m_BoolCVars.m_CVars[i].initial,
-            &m_BoolCVars.m_CVars[i].current
+            &m_CVars_Bool.m_CVars[i].parameter->name,
+            &m_CVars_Bool.m_CVars[i].parameter->description,
+            CVarType::Bool,
+            &m_CVars_Bool.m_CVars[i].initial,
+            &m_CVars_Bool.m_CVars[i].current
         };
 
         cvars.push_back(data);
     }
 
-    for (int i = 0; i < m_IntCVars.m_LastCVar; i++) {
+    for (int i = 0; i < m_CVars_Int.m_LastCVar; i++) {
         const CVarData data = {
-            &m_IntCVars.m_CVars[i].parameter->name,
-            &m_IntCVars.m_CVars[i].parameter->description,
-            CVarType::INT,
-            &m_IntCVars.m_CVars[i].initial,
-            &m_IntCVars.m_CVars[i].current
+            &m_CVars_Int.m_CVars[i].parameter->name,
+            &m_CVars_Int.m_CVars[i].parameter->description,
+            CVarType::Int,
+            &m_CVars_Int.m_CVars[i].initial,
+            &m_CVars_Int.m_CVars[i].current
         };
 
         cvars.push_back(data);
     }
 
-    for (int i = 0; i < m_FloatCVars.m_LastCVar; i++) {
+    for (int i = 0; i < m_CVars_Float.m_LastCVar; i++) {
         const CVarData data = {
-            &m_FloatCVars.m_CVars[i].parameter->name,
-            &m_FloatCVars.m_CVars[i].parameter->description,
-            CVarType::FLOAT,
-            &m_FloatCVars.m_CVars[i].initial,
-            &m_FloatCVars.m_CVars[i].current
+            &m_CVars_Float.m_CVars[i].parameter->name,
+            &m_CVars_Float.m_CVars[i].parameter->description,
+            CVarType::Float,
+            &m_CVars_Float.m_CVars[i].initial,
+            &m_CVars_Float.m_CVars[i].current
         };
 
         cvars.push_back(data);
     }
 
-    for (int i = 0; i < m_StringCVars.m_LastCVar; i++) {
+    for (int i = 0; i < m_CVars_String.m_LastCVar; i++) {
         const CVarData data = {
-            &m_StringCVars.m_CVars[i].parameter->name,
-            &m_StringCVars.m_CVars[i].parameter->description,
-            CVarType::STRING,
-            &m_StringCVars.m_CVars[i].initial,
-            &m_StringCVars.m_CVars[i].current
+            &m_CVars_String.m_CVars[i].parameter->name,
+            &m_CVars_String.m_CVars[i].parameter->description,
+            CVarType::String,
+            &m_CVars_String.m_CVars[i].initial,
+            &m_CVars_String.m_CVars[i].current
         };
 
         cvars.push_back(data);
@@ -373,7 +391,7 @@ Onyx::CVarArray<T>::CVarArray(const size_t size)
 template<typename T>
 Onyx::CVarArray<T>::~CVarArray()
 {
-    delete m_CVars;
+    delete[] m_CVars;
 }
 
 template<typename T>
@@ -440,9 +458,16 @@ void SetCurrentCVarByIndex(int32_t index, const T& data) {
     Onyx::CVarManagerImpl::Get()->GetCVarArray<T>()->SetCurrent(data, index);
 }
 
+
+AUTOCVAR_IMPLEMENTATION(bool, Bool)
+AUTOCVAR_IMPLEMENTATION(int, Int)
+AUTOCVAR_IMPLEMENTATION(float, Float)
+AUTOCVAR_IMPLEMENTATION(std::string, String)
+
+/*
 Onyx::AutoCVar_Bool::AutoCVar_Bool(const char* name, const char* description, bool defaultValue)
 {
-    CVarParameter* param = CVarManager::Get()->CreateBoolCVar(name, description, defaultValue, defaultValue);
+    CVarParameter* param = CVarManager::Get()->CreateCVar_Bool(name, description, defaultValue, defaultValue);
     index = param->arrayIndex;
 }
 
@@ -463,7 +488,7 @@ void Onyx::AutoCVar_Bool::Set(const bool value)
 
 Onyx::AutoCVar_Int::AutoCVar_Int(const char* name, const char* description, int defaultValue)
 {
-    CVarParameter* param = CVarManager::Get()->CreateIntCVar(name, description, defaultValue, defaultValue);
+    CVarParameter* param = CVarManager::Get()->CreateCVar_Bool(name, description, defaultValue, defaultValue);
     index = param->arrayIndex;
 }
 
@@ -484,7 +509,7 @@ void Onyx::AutoCVar_Int::Set(const int value)
 
 Onyx::AutoCVar_Float::AutoCVar_Float(const char* name, const char* description, float defaultValue)
 {
-    CVarParameter* param = CVarManager::Get()->CreateFloatCVar(name, description, defaultValue, defaultValue);
+    CVarParameter* param = CVarManager::Get()->CreateCVar_Float(name, description, defaultValue, defaultValue);
     index = param->arrayIndex;
 }
 
@@ -506,7 +531,7 @@ void Onyx::AutoCVar_Float::Set(const float value)
 
 Onyx::AutoCVar_String::AutoCVar_String(const char* name, const char* description, std::string defaultValue)
 {
-    CVarParameter* param = CVarManager::Get()->CreateStringCVar(name, description, defaultValue, defaultValue);
+    CVarParameter* param = CVarManager::Get()->CreateCVar_String(name, description, defaultValue, defaultValue);
     index = param->arrayIndex;
 }
 
@@ -524,4 +549,5 @@ void Onyx::AutoCVar_String::Set(const std::string value)
 {
     return SetCurrentCVarByIndex<std::string>(index, value);
 }
+*/
 

@@ -1,5 +1,15 @@
 #ifndef ONYX_CORE_CVAR_H
 #define ONYX_CORE_CVAR_H
+/**
+* @file CVar.h
+* @brief Console Variable System
+* @details Enables the user to set and retrieve Console Variables of simple data types.
+* @details Currently supports `bool`, `int`, `float` and `std::string` types.
+*
+* ------------------------------------------
+* @author Ewan Burnett(EwanBurnettSK@Outlook.com)
+* @date 2024 - 07 - 20
+*/
 
 #include <cstdint>
 #include <string> 
@@ -7,78 +17,101 @@
 
 namespace Onyx {
 
+    /**
+     * @brief The Data Type of this CVar.
+    */
     enum class CVarType : char {
         NONE = 0,
-        BOOL,
-        INT,
-        FLOAT,
-        STRING
+        Bool,
+        Int,
+        Float,
+        String
     };
 
+    /**
+     * @brief Represents a CVar's internal data. 
+    */
     struct CVarData {
-        void operator = (const CVarData& cvar) {
-            this->pName = cvar.pName; 
-            this->pDescription = cvar.pDescription;
-            this->type = cvar.type; 
-            this->pCurrentData = cvar.pCurrentData; 
-            this->pInitialData = cvar.pInitialData;
-        }
         const std::string* pName;
         const std::string* pDescription;
-        CVarType type; 
-        void* pInitialData; 
-        void* pCurrentData; 
+        CVarType type;
+        void* pInitialData;
+        void* pCurrentData;
+
+        void operator = (const CVarData& cvar) {
+            this->pName = cvar.pName;
+            this->pDescription = cvar.pDescription;
+            this->type = cvar.type;
+            this->pCurrentData = cvar.pCurrentData;
+            this->pInitialData = cvar.pInitialData;
+        }
     };
 
-    class CVarParameter; 
+    class CVarParameter;
 
     class CVarManager {
     public:
-        CVarManager(); 
-        ~CVarManager(); 
+        CVarManager();
+        ~CVarManager();
 
         static CVarManager* Get();
 
         //Returns nullptr if var is not found. 
-        virtual const bool* GetBoolCVar(const std::string& name) = 0;
-        virtual void SetBoolCVar(const std::string& name, const bool value) = 0;
+        virtual const bool* GetCVar_Bool(const std::string& name) = 0;
+        virtual void SetCVar_Bool(const std::string& name, const bool value) = 0;
+        virtual CVarParameter* CreateCVar_Bool(const char* name, const char* description, const bool defaultValue, const bool currentValue) = 0;
 
-        virtual const int* GetIntCVar(const std::string& name) = 0;
-        virtual void SetIntCVar(const std::string& name, const int value) = 0;
+        virtual const int* GetCVar_Int(const std::string& name) = 0;
+        virtual void SetCVar_Int(const std::string& name, const int value) = 0;
+        virtual CVarParameter* CreateCVar_Int(const char* name, const char* description, const int defaultValue, const int currentValue) = 0;
 
-        virtual const float* GetFloatCVar(const std::string& name) = 0;
-        virtual void SetFloatCVar(const std::string& name, const float value) = 0;
+        virtual const float* GetCVar_Float(const std::string& name) = 0;
+        virtual void SetCVar_Float(const std::string& name, const float value) = 0;
+        virtual CVarParameter* CreateCVar_Float(const char* name, const char* description, const float defaultValue, const float currentValue) = 0;
 
-        virtual const std::string* GetStringCVar(const std::string& name) = 0;
-        virtual void SetStringCVar(const std::string& name, const std::string& value) = 0;
+        virtual const std::string* GetCVar_String(const std::string& name) = 0;
+        virtual void SetCVar_String(const std::string& name, const std::string& value) = 0;
+        virtual CVarParameter* CreateCVar_String(const char* name, const char* description, const std::string& defaultValue, const std::string& currentValue) = 0;
 
-        virtual CVarParameter* CreateBoolCVar(const char* name, const char* description, const bool defaultValue, const bool currentValue) = 0;
-        virtual CVarParameter* CreateIntCVar(const char* name, const char* description, const int defaultValue, const int currentValue) = 0;
-        virtual CVarParameter* CreateFloatCVar(const char* name, const char* description, const float defaultValue, const float currentValue) = 0;
-        virtual CVarParameter* CreateStringCVar(const char* name, const char* description, const std::string& defaultValue, const std::string& currentValue) = 0;
-
-        virtual std::vector<CVarData> GetCVarData() const = 0; 
+        virtual std::vector<CVarData> GetCVarData() const = 0;
     protected:
-        constexpr static int MAX_BOOL_CVARS = 1000; 
-        constexpr static int MAX_INT_CVARS = 1000; 
-        constexpr static int MAX_FLOAT_CVARS = 1000; 
-        constexpr static int MAX_STRING_CVARS = 200; 
+        constexpr static int MAX_BOOL_CVARS = 1000;
+        constexpr static int MAX_INT_CVARS = 1000;
+        constexpr static int MAX_FLOAT_CVARS = 1000;
+        constexpr static int MAX_STRING_CVARS = 200;
     };
 
     template<typename T>
     struct AutoCVar {
     protected:
-        int index; 
-        using CVarType = T; 
+        int index;
+        using CVarType = T;
     };
 
+    /**
+    * @brief Declares an AutoCVar of type T, and a specified CVarType
+    */
+    #define AUTOCVAR_DECLARATION(T, CVarType) struct AutoCVar_##CVarType : AutoCVar<T> { \
+        AutoCVar_##CVarType(const char* name, const char* description, T defaultValue); \
+        \
+        T Get(); \
+        T* GetPtr(); \
+        void Set(const T value); \
+    }; \
+
+    AUTOCVAR_DECLARATION(bool, Bool);
+    AUTOCVAR_DECLARATION(int, Int);
+    AUTOCVAR_DECLARATION(float, Float);
+    AUTOCVAR_DECLARATION(std::string, String);
+
+    /*
     struct AutoCVar_Bool : AutoCVar<bool>
     {
         AutoCVar_Bool(const char* name, const char* description, bool defaultValue);
 
-        bool Get(); 
-        bool* GetPtr(); 
-        void Set(const bool value); 
+        bool Get();
+        bool* GetPtr();
+        void Set(const bool value);
     };
 
     struct AutoCVar_Int : AutoCVar<int>
@@ -107,5 +140,6 @@ namespace Onyx {
         std::string* GetPtr();
         void Set(const std::string value);
     };
+    */
 }
 #endif

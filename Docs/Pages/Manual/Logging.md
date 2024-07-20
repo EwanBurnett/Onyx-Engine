@@ -16,7 +16,8 @@ The `FILE*` stream can be changed via `Onyx::Log::SetOutputStream()`.
 | `Onyx::Log::Failure()` | Prints a Failure message. Intended for use when an operation has failed.                                                                                            | <span style="color:brown">**The quick brown fox jumps over the lazy dog** </span>                                                                                                                                                      |
 | `Onyx::Log::Error()`   | Prints an Error message, alongside `__FILE__`, `__LINE__` and `__PRETTY_FUNCTION__`. Use in non-fatal cases which invalidate an operation.                          | <span style="color:#e74856">**Error**<br/>&nbsp;**FILE: Onyx-Engine\Testbed\main.cpp**<br/>**&nbsp;&nbsp;LINE: 30**<br/>**&nbsp;&nbsp;FUNCTION: int __cdecl main(void)**<br/>**The quick brown fox jumps over the lazy dog** </span>   |
 | `Onyx::Log::Fatal()`   | Prints a Fatal Error message, with `__FILE__`, `__LINE__` and `__PRETTY_FUNCTION__`, and triggers a breakpoint for the current Debugger if `ONYX_DEBUG` is defined. | <span style="color:red">**Fatal Error**<br/>&nbsp;**FILE: Onyx-Engine\Testbed\main.cpp**<br/>&nbsp;&nbsp;**LINE: 30**<br/>&nbsp;&nbsp;**FUNCTION: int __cdecl main(void)**<br/>**The quick brown fox jumps over the lazy dog** </span> |
-![log output](/Resources/img_logging_output_windows.png)
+
+![logging example output](/Resources/img_logging_output_windows.png)
  
 ```cpp
 //Code to reproduce the above example

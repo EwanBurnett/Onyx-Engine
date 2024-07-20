@@ -8,85 +8,84 @@ const char* platformName = "Windows";
 const char* platformName = "Linux";
 #endif
 
+
+struct Game {
+    void SetMaxEntityCount(int count) {
+        Onyx::Log::Status("[Game] Setting Max Entity Count to %d.\n", count);
+    }
+}game;
+
+struct Settings {
+    bool EnableOcclusionCulling = false;
+}settings;
+
+void ShowFrameStatistics() {
+    Onyx::Log::Debug("Showing Frame Statistics.\n");
+}
+
 int main() {
     Onyx::Log::Status("[%s]\tOnyx Version: %s\n", platformName, Onyx::GetVersionString().c_str());
 
-    Onyx::AutoCVar_Bool bSetting("Test.Setting", "A Test CVar", false);
-    bSetting.Set(true);
-    bool b = bSetting.Get();
+    //Define CVars
 
-    Onyx::AutoCVar_String sSetting("Test.test", "A test CVar", "hey!");
+    //Define these CVars with a handle, which can be used to Get / Set their values.
+    Onyx::AutoCVar_Bool showFrameStatistics("Example.Debug.ShowFrameStatistics", "Whether to show Framerate Statistics. 0: Disable, 1: Enable.", true);
+    Onyx::AutoCVar_Int maxEntityCount("Example.Game.MaxEntityCount", "Controls the Maximum number of entities the game can simulate at once.", 1000);
 
-    Onyx::CVarManager* pManager = Onyx::CVarManager::Get();
-    pManager->CreateStringCVar("Test.Greeting", "A Debug Greeting Message to test CVars.", "Hello", "Hello");
-    pManager->CreateStringCVar("Test.Greeting.2", "A Debug Greeting Message to test CVars.", "Hello", "Hello");
-    pManager->CreateStringCVar("Test.Greeting.3", "A Debug Greeting Message to test CVars.", "Hello", "Hello");
-    Onyx::AutoCVar_Bool bSetting2("Test.Greeting.4", "A Test CVar", false);
+    //Define anonymous CVars, with no handle. These can only be referenced by name.
+    Onyx::AutoCVar_Bool("Example.Renderer.EnableOcclusionCulling", "Whether to enable Occlusion Culling. 0: Disable, 1: Enable.", false);
+    Onyx::AutoCVar_String("Example.App.LogFileName", "The name of the Application Log file. Changes to this variable will take effect on the next application load.", "log.txt");
 
-    for (int i = 0; i < 100; i++) {
-        char buf[0xff];
-        sprintf(buf, "Test.Obj_%d", i);
-        pManager->CreateIntCVar(buf, "A Test CVar", 0, i);
+    //Manually create a CVar through the manager. This method isn't recommended.
+    Onyx::CVarManager::Get()->CreateCVar_Float("Example.World.WorldScale", "Sets the Uniform Scale of the World.", 1.0, 1.5);
+
+
+    //Getting CVars
+
+    //For CVars with a handle, simply call Get() on the handle for the value. 
+    if (showFrameStatistics.Get()) {
+        ShowFrameStatistics();
     }
+    game.SetMaxEntityCount(maxEntityCount.Get());
+
+    //Anonymous CVars require retrieval from the manager by name - as well as Validation. (the CVar may not exist!)
+    const bool* pEnableOcclusionCulling = Onyx::CVarManager::Get()->GetCVar_Bool("Example.Renderer.EnableOcclusionCulling");
+    if (pEnableOcclusionCulling != nullptr) {  //If a CVar is invalid, it will return nullptr. 
+        settings.EnableOcclusionCulling = *pEnableOcclusionCulling;
+    }
+
+
+    //Setting CVars
+
+    //CVars with a handle can be set by calling Set()
+    showFrameStatistics.Set(false);
+    maxEntityCount.Set(1000);
+
+    //Anonymous CVars can be set through the manager
+    Onyx::CVarManager::Get()->SetCVar_String("Example.App.LogFileName", "Dump.bin");
+
+
+    //This example prints all current CVars to the Logger output. 
     auto cvars = Onyx::CVarManager::Get()->GetCVarData();
     for (auto& cvar : cvars) {
         Onyx::Log::Print("%s\n\t%s\n\t%d\n", cvar.pName->c_str(), cvar.pDescription->c_str(), cvar.type);
         switch (cvar.type) {
-        case(Onyx::CVarType::BOOL):
-            Onyx::Log::Print("\tInitial Value: %b\n\tCurrent Value: %b\n", *reinterpret_cast<bool*>(cvar.pInitialData), *reinterpret_cast<bool*>(cvar.pCurrentData));
+        case(Onyx::CVarType::Bool):
+            Onyx::Log::Print("\tInitial Value: %s\n\tCurrent Value: %s\n", *reinterpret_cast<bool*>(cvar.pInitialData) ? "true" : "false", *reinterpret_cast<bool*>(cvar.pCurrentData) ? "true" : "false");
             break;
-        case(Onyx::CVarType::INT):
+        case(Onyx::CVarType::Int):
             Onyx::Log::Print("\tInitial Value: %d\n\tCurrent Value: %d\n", *reinterpret_cast<int*>(cvar.pInitialData), *reinterpret_cast<int*>(cvar.pCurrentData));
             break;
-        case(Onyx::CVarType::FLOAT):
+        case(Onyx::CVarType::Float):
             Onyx::Log::Print("\tInitial Value: %d\n\tCurrent Value: %d\n", *reinterpret_cast<float*>(cvar.pInitialData), *reinterpret_cast<float*>(cvar.pCurrentData));
-            break; 
-        case(Onyx::CVarType::STRING):
+            break;
+        case(Onyx::CVarType::String):
             Onyx::Log::Print("\tInitial Value: %s\n\tCurrent Value: %s\n", reinterpret_cast<std::string*>(cvar.pInitialData)->c_str(), reinterpret_cast<std::string*>(cvar.pCurrentData)->c_str());
             break;
         default:
             break;
         }
     }
-
-    //std::string sData = *reinterpret_cast<std::string*>(cvars.at(0x65).pCurrentData)        ; 
-
-
-    const int* val = Onyx::CVarManager::Get()->GetIntCVar("Test.Overwriting");
-    if (val) {
-        printf("%d", *val);
-    }
-
-    const std::string* greeting = pManager->GetStringCVar("Test.Greeting");
-    printf("%s\n", greeting->c_str());
-
-    //Logs to stdout by default. 
-    printf("This is printf!\n");
-    Onyx::Log::Print("This is a Print message\n");
-    Onyx::Log::Debug("This is a Debug message\n");
-    Onyx::Log::Status("This is a Status Message\n");
-    Onyx::Log::Warning("This is a Warning message\n");
-    Onyx::Log::Success("This is a Success message\n");
-    Onyx::Log::Failure("This is a Failure message\n");
-    Onyx::Log::Error(__FILE__, __LINE__, __PRETTY_FUNCTION__, "This is an Error message\n");
-    Onyx::Log::Fatal(__FILE__, __LINE__, __PRETTY_FUNCTION__, "This is a Fatal Error message (Triggers a breakpoint!\n");
-
-    //Changing the logger stream
-    FILE* f = fopen("LOG.txt", "a+");
-    Onyx::Log::SetOutputStream(f);
-    Onyx::Log::Print("%s\t%s\n", __DATE__, __TIME__);
-    Onyx::Log::Print("This Print message will be printed to a file!\n");
-    Onyx::Log::Debug("This Debug message will be printed to a file!\n");
-    Onyx::Log::Status("This Status message will be printed to a file!\n");
-    Onyx::Log::Warning("This Warning will be printed to a file!\n");
-    Onyx::Log::Success("This Success message will be printed to a file!\n");
-    Onyx::Log::Failure("This Failure message will be printed to a file!\n");
-    Onyx::Log::Error(__FILE__, __LINE__, __PRETTY_FUNCTION__, "This Error message will be printed to both stderr and to a file!\n");
-    Onyx::Log::Fatal(__FILE__, __LINE__, __PRETTY_FUNCTION__, "This Fatal Error message will be printed to both stderr and to a file!\n");
-
-    Onyx::Log::SetOutputStream(stdout);     //ensure stream is set back to stdout. 
-    fclose(f);
-
 
     return 0;
 }
