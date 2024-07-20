@@ -56,6 +56,8 @@ namespace Onyx {
             friend bool operator ==(const Vector3<T>& lhs, const Vector3<T>& rhs) { return { lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z }; }
             friend bool operator !=(const Vector3<T>& lhs, const Vector3<T>& rhs) { return !(lhs == rhs); }
 
+            T& operator[](int idx) { return this->arr[idx]; };
+
             /**
              * @brief Equivalent to Vector3<T>(0, 1, 0)
              * @return A direction Vector pointing Upwards

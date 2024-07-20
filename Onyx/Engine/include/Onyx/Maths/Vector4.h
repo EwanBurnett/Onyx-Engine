@@ -61,6 +61,7 @@ namespace Onyx {
             friend bool operator ==(const Vector4<T>& lhs, const Vector4<T>& rhs) { return { lhs.x == rhs.x && lhs.y == rhs.y }; }
             friend bool operator !=(const Vector4<T>& lhs, const Vector4<T>& rhs) { return !(lhs == rhs); }
 
+            T& operator[](int idx) { return this->arr[idx]; };
 
             /**
              * @brief Computes the dot product of two vectors.

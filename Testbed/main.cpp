@@ -34,7 +34,7 @@ int main() {
 
     //Define these CVars with a handle, which can be used to Get / Set their values.
     Onyx::AutoCVar_Bool showFrameStatistics("Example.Debug.ShowFrameStatistics", "Whether to show Framerate Statistics. 0: Disable, 1: Enable.", true);
-    Onyx::AutoCVar_Int maxEntityCount("Example.Game.MaxEntityCount", "Controls the Maximum number of entities the game can simulate at once.", 1000);
+    Onyx::AutoCVar_Int maxEntityCount("Example.Game.MaxEntityCount", "Controls the Maximum number of entities the game can simulate at once.", 100);
 
     //Define anonymous CVars, with no handle. These can only be referenced by name.
     Onyx::AutoCVar_Bool("Example.Renderer.EnableOcclusionCulling", "Whether to enable Occlusion Culling. 0: Disable, 1: Enable.", false);

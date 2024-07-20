@@ -50,6 +50,7 @@ namespace Onyx {
             friend bool operator ==(const Vector2<T>& lhs, const Vector2<T>& rhs) { return { lhs.x == rhs.x && lhs.y == rhs.y }; }
             friend bool operator !=(const Vector2<T>& lhs, const Vector2<T>& rhs) { return !(lhs == rhs); }
 
+            T& operator[](int idx) { return this->arr[idx]; };
 
             /**
              * @brief Equivalent to Vector2<T>(0, 1)
@@ -102,6 +103,7 @@ namespace Onyx {
              * @param val The value to set.
             */
             inline void Set(const T& val) { x = val; y = val; }
+
         };
 
         typedef Vector2<int> Vector2i;

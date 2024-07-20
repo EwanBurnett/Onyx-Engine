@@ -7,7 +7,7 @@
 * @author Ewan Burnett (EwanBurnettSK@outlook.com)
 * @date 2024/07/20
 */
-
+#include <type_traits>
 #include <limits>
 #include <cmath>
 #include <cfloat>
@@ -28,11 +28,18 @@ namespace Onyx {
         constexpr double Deg2Rad = PI / 180.0;
         constexpr double Rad2Deg = 180.0 / PI;
 
-        template<typename T>
-        class Vector3;
-
 
         //Helpers
+
+        template<typename T>
+        struct Vector2;
+
+        template<typename T>
+        struct Vector3;
+
+        template<typename T>
+        struct Vector4;
+
 
         /**
          * @brief Clamps a Value to a given range.
@@ -43,17 +50,19 @@ namespace Onyx {
          * @return The clamped value.
         */
         template <typename T>
-        inline void Clamp(T& value, const T min, const T max) {
-            static_assert(std::is_arithmetic<T>(), "Error: T is not Arithmetic!\n");
+        inline T Clamp(const T value, const T min, const T max) {
+
+            T v = value; 
 
             if (value < min) {
-                value = min;
+                v = min;
             }
             else if (value > max) {
-                value = max;
+                v = max;
             }
-        };
 
+            return v; 
+        };
 
         /**
          * @brief Linearly Interpolates a value between a[0] and b[1].

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project("Onyx" VERSION 0.0.1)
+project("Onyx" VERSION 0.0.2)
 
 # Options
 option(ONYX_BUILD_TESTS "Build the Unit Test project" OFF)
@@ -55,7 +55,7 @@ if(ONYX_BUILD_DOCS)
     if(DOXYGEN_FOUND)
         message(STATUS "Generating Doxygen Documentation.")
         if(EXISTS "${CMAKE_SOURCE_DIR}/Doxyfile")
-            execute_process(COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_SOURCE_DIR}/Doxyfile" WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} RESULT_VARIABLE DOCUMENTATION_GENERATION_RESULT)
+            execute_process(COMMAND ${DOXYGEN_EXECUTABLE} "${CMAKE_SOURCE_DIR}/Doxyfile" WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} RESULT_VARIABLE DOCUMENTATION_GENERATION_RESULT OUTPUT_QUIET ERROR_QUIET)
             if(NOT DOCUMENTATION_GENERATION_RESULT EQUAL "0")
                 message(SEND_ERROR "Doxygen Generation failed with status ${DOCUMENTATION_GENERATION_RESULT}!")
             endif()
