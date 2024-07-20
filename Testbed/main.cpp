@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <Onyx.h>
 #include <Onyx/Core/CVar.h>
+#include <Onyx/Maths/Maths.h>
 
 #if ONYX_PLATFORM_WINDOWS
 const char* platformName = "Windows";
@@ -26,6 +27,9 @@ void ShowFrameStatistics() {
 int main() {
     Onyx::Log::Status("[%s]\tOnyx Version: %s\n", platformName, Onyx::GetVersionString().c_str());
 
+
+
+    Onyx::Maths::Vector3f pos = { 0.0f, 1.0f, 2.0f };
     //Define CVars
 
     //Define these CVars with a handle, which can be used to Get / Set their values.
