@@ -2,7 +2,7 @@
 #define ONYX_MATHS_VECTOR2_H
 /**
 * @file Vector2.h
-* 
+*
 * ------------------------------------------
 * @author Ewan Burnett (EwanBurnettSK@outlook.com)
 * @date 2024/07/20
@@ -32,10 +32,25 @@ namespace Onyx {
                 T arr[2];
             };
 
+            T& operator[](int idx) { return this->arr[idx]; };
+
+            friend Vector2<T> operator -(Vector2<T> lhs) { return { -lhs.x, -lhs.y }; }
+
             friend Vector2<T> operator +(Vector2<T> lhs, const Vector2<T>& rhs) { return { lhs.x + rhs.x, lhs.y + rhs.y }; }
             friend Vector2<T> operator -(Vector2<T> lhs, const Vector2<T>& rhs) { return { lhs.x - rhs.x, lhs.y - rhs.y }; }
+            friend Vector2<T> operator *(Vector2<T> lhs, const Vector2<T>& rhs) { return { lhs.x * rhs.x, lhs.y * rhs.y }; }
+            friend Vector2<T> operator /(Vector2<T> lhs, const Vector2<T>& rhs) { return { lhs.x / rhs.x, lhs.y / rhs.y }; }
+
+            friend Vector2<T> operator +(Vector2<T> lhs, const T& rhs) { return { lhs.x + rhs, lhs.y + rhs }; }
+            friend Vector2<T> operator -(Vector2<T> lhs, const T& rhs) { return { lhs.x - rhs, lhs.y - rhs }; }
             friend Vector2<T> operator *(Vector2<T> lhs, const T& rhs) { return { lhs.x * rhs, lhs.y * rhs }; }
             friend Vector2<T> operator /(Vector2<T> lhs, const T& rhs) { return { lhs.x / rhs, lhs.y / rhs }; }
+
+
+            friend Vector2<T> operator +(const T& lhs, Vector2<T> rhs) { return { rhs.x + lhs, rhs.y + lhs }; }
+            friend Vector2<T> operator -(const T& lhs, Vector2<T> rhs) { return { rhs.x - lhs, rhs.y - lhs }; }
+            friend Vector2<T> operator *(const T& lhs, Vector2<T> rhs) { return { rhs.x * lhs, rhs.y * lhs }; }
+            friend Vector2<T> operator /(const T& lhs, Vector2<T> rhs) { return { rhs.x / lhs, rhs.y / lhs }; }
 
             inline Vector2& operator +=(const Vector2<T>& rhs) { this->x += rhs.x; this->y += rhs.y; return *this; }
             inline Vector2& operator -=(const Vector2<T>& rhs) { this->x -= rhs.x; this->y -= rhs.y; return *this; }
@@ -50,47 +65,60 @@ namespace Onyx {
             friend bool operator ==(const Vector2<T>& lhs, const Vector2<T>& rhs) { return { lhs.x == rhs.x && lhs.y == rhs.y }; }
             friend bool operator !=(const Vector2<T>& lhs, const Vector2<T>& rhs) { return !(lhs == rhs); }
 
-            T& operator[](int idx) { return this->arr[idx]; };
-
             /**
              * @brief Equivalent to Vector2<T>(0, 1)
              * @return A direction Vector pointing Upwards
             */
-            inline const Vector2<T> Up() const { return{ static_cast<T>(0.0), static_cast<T>(1.0) }; }
+            inline constexpr Vector2<T> Up() const { return{ static_cast<T>(0.0), static_cast<T>(1.0) }; }
 
             /**
              * @brief Equivalent to Vector2<T>(0, -1)
              * @return A direction Vector pointing Down
             */
-            inline const Vector2<T> Down() const { return{ static_cast<T>(0.0), static_cast<T>(-1.0) }; }
+            inline constexpr Vector2<T> Down() const { return{ static_cast<T>(0.0), static_cast<T>(-1.0) }; }
 
             /**
              * @brief Equivalent to Vector2<T>(-1, 0)
              * @return A direction Vector pointing Left
             */
-            inline const Vector2<T> Left() const { return{ static_cast<T>(-1.0), static_cast<T>(0.0) }; }
+            inline constexpr Vector2<T> Left() const { return{ static_cast<T>(-1.0), static_cast<T>(0.0) }; }
 
             /**
              * @brief Equivalent to Vector2<T>(1, 0)
              * @return A direction Vector pointing Right
             */
-            inline const Vector2<T> Right() const { return{ static_cast<T>(1.0), static_cast<T>(0.0) }; }
+            inline constexpr Vector2<T> Right() const { return{ static_cast<T>(1.0), static_cast<T>(0.0) }; }
 
             /**
              * @brief Computes the dot product of two vectors.
             */
-            inline double Dot(const Vector2<T>& other) { return (double)(x * other.x + y * other.y); }
+            inline double Dot(const Vector2<T>& other) { return static_cast<double>((x * other.x) + (y * other.y)); }
 
+            /**
+             * @brief Computes the dot product of two vectors.
+            */
+
+            inline static double Dot(const Vector2<T>& a, const Vector2<T>& b) { return static_cast<double>((a.x * b.x) + (a.y * b.y)); }
             /**
              * @brief Computes the Magnitude of a Vector.
             */
             inline double Length() const { return sqrt((x * x) + (y * y)); }
 
             /**
+             * @brief Computes the Magnitude of a Vector.
+            */
+            inline static double Length(const Vector2<T>& vector) { return sqrt((vector.x * vector.x) + (vector.y * vector.y)); }
+
+            /**
              * @brief Computes the squared length of a vector.
              * @return
             */
-            inline double LengthSquared() const { return (x * x) + (y * y); }
+            inline double LengthSquared() const { return static_cast<double>((x * x) + (y * y)); }
+
+            /**
+             * @brief Computes the Magnitude of a Vector.
+            */
+            inline static double LengthSquared(const Vector2<T>& vector) { return static_cast<double>((vector.x * vector.x) + (vector.y * vector.y)); }
 
             /**
              * @brief Returns the Normalized form of a vector, dividing each component by its length.
@@ -99,11 +127,58 @@ namespace Onyx {
             inline const Vector2<T> Normalize() { return Vector2<T>(*this / this->Length()); }
 
             /**
+             * @brief Returns the Normalized form of a vector, dividing each component by its length.
+             * @return The normalized vector.
+            */
+            inline static Vector2 Normalize(const Vector2<T>& vector) { return (vector / vector.Length()); }
+
+            /**
              * @brief Sets each component of this Vector to a value.
              * @param val The value to set.
             */
             inline void Set(const T& val) { x = val; y = val; }
 
+            /**
+             * @brief Returns the Distance between two points
+             * @param a
+             * @param b
+             * @return
+            */
+            inline static double Distance(const Vector2<T>& a, const Vector2<T>& b) { return sqrt(DistanceSquared(a, b)); };
+
+            /**
+             * @brief Returns the Squared Distance between two points
+             * @param a
+             * @param b
+             * @return
+            */
+            inline static double DistanceSquared(const Vector2<T>& a, const Vector2<T>& b) { return static_cast<double>(((b.x - a.x) * (b.x - a.x)) + ((b.y - a.y) * (b.y - a.y))); };
+
+            /**
+             * @brief Linearly Interpolates between two Vectors
+             * @param a
+             * @param b
+             * @param t
+             * @return
+            */
+            inline static Vector2 Lerp(const Vector2<T>& a, const Vector2<T>& b, const double t) { return a + (t * (b - a)); };
+
+            /**
+             * @brief Spherically Interpolates between two Vectors
+             * @param a
+             * @param b
+             * @param t
+             * @return
+            */
+            static Vector2 Slerp(const Vector2<T>& a, const Vector2<T>& b, const double t) {
+                double cosTheta = Dot(a, b);
+                Clamp(cosTheta, -1.0, 1.0);   //Clamp the cosine to the range of ArcCos, to avoid floating point precision errors. 
+
+                double theta = acos(cosTheta) * t;
+                Vector2 v = Normalize(b - (a * cosTheta)); //Compute an intermediate vector
+
+                return ((a * cos(theta)) + (v * sin(theta)));
+            };
         };
 
         typedef Vector2<int> Vector2i;

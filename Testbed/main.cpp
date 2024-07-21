@@ -20,9 +20,9 @@ std::string FormatVector2(const Onyx::Maths::Vector2<T>& vector) {
 
 template<typename T>
 std::string FormatVector3(const Onyx::Maths::Vector3<T>& vector) {
-    char buffer[0xff];
-    memset(buffer, '\0', 0xff);
+    static char buffer[0xff];
     sprintf(buffer, "(%f, %f, %f)", vector.x, vector.y, vector.z);
+
     return buffer;
 }
 
@@ -71,7 +71,7 @@ int main() {
     Log::Print("Int Max = %d\n", Maths::Int_Max);
     
     // Maths Utility Methods
-
+    printf("\n");
     //Conversions between degrees and radians
     float degrees = 60; 
     float radians = Onyx::Maths::DegToRad(degrees);
@@ -79,26 +79,43 @@ int main() {
     degrees = Maths::RadToDeg(radians); 
     Log::Print("%f radians = %f degrees.\n", radians, degrees); 
 
-    //Clamp Arithmetic types
+    printf("\n"); 
+
+    //Clamping Arithmetic types
+    //Clamp to the Maximum of the range
     float value = Onyx::Maths::PI; 
     float vMin = 0.0f; 
     float vMax = 1.0f; 
-    value = Maths::Clamp(value, vMin, vMax); 
+    float newValue = Maths::Clamp(value, vMin, vMax); 
+    printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
+
+    //Clamp to the Minimum of the range
+    value = -10000.0f; 
+    vMin = -30.0f; 
+    vMax = 40.0f; 
+    newValue = Maths::Clamp(value, vMin, vMax); 
+    printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
+
+    //Value is within our range, so don't modify it. 
+    value = 50.0f; 
+    vMin = 0.0f; 
+    vMax = 100.0f; 
+    newValue = Maths::Clamp(value, vMin, vMax); 
+    printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
 
 
+    Onyx::Maths::Vector3f v0(3, -5, 4);
+    Onyx::Maths::Vector3f v1(2, 6, 5);
 
+    auto c = Onyx::Maths::Vector3f::Cross(v0, v1); 
 
-    Onyx::Maths::Vector3f pos = { 0.0f, 1.0f, 2.0f };
-    const char* v = FormatVector3(pos).c_str();
-    //Onyx::Log::Print("pos = %s\n", v);
+    Onyx::Maths::Quaternion q0(9, 1, 4, 9);
+    Onyx::Maths::Quaternion q1(3, 2, 16, 6);
 
-    Onyx::Maths::Matrix4x4<> mat = {};
-    static float rot = 0.0f;
-    rot += 0.005f;
-    mat = Onyx::Maths::Matrix4x4<>::XRotationFromDegrees(rot);
-    Onyx::Log::Print("rot = %f\n", rot);
-    //Onyx::Log::Print("mat = \n%s", FormatMatrix4x4(mat).c_str());
-    printf("\033[6A");
+    auto q2 = q0 * q1;
+    printf("\n");
+    printf("Quaternion Mul = [%f](%f, %f, %f)\n", q2.w, q2.v.x, q2.v.y, q2.v.z);
+
 
     fclose(logFile);
 

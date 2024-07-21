@@ -74,7 +74,7 @@ namespace Onyx {
         */
         template <typename T>
         inline T Lerp(const T& a, const T& b, const double t) {
-            return a * (1.0 - t) + (b * t);
+            return a + (t * (b - a));
         }
 
         /**
@@ -124,32 +124,6 @@ namespace Onyx {
         }
 
 
-        /**
-         * @brief Orthonormalizes 3 Vectors using the Modified Gram-Schmidt Algorithm.
-         * @tparam T
-         * @param a
-         * @param b
-         * @param c
-        */
-        template <typename T>
-        inline void Orthonormalize(Vector3<T>& a, Vector3<T>& b, Vector3<T>& c) {
-            Vector3<T> v[3] = { a, b, c };
-
-            //Orthonormalize using the Modified Gram-Schmidt Algorithm 
-            for (uint8_t i = 0; i < 3; i++) {
-                for (uint8_t j = 0; j < i; j++) {
-                    const double f = static_cast<double>(v[j].Dot(v[i]) / v[j].Dot(v[j]));
-
-                    for (uint8_t k = 0; k < 3; k++) {
-                        v[i].arr[k] -= f * v[j].arr[k];
-                    }
-                }
-            }
-
-            a = v[0].Normalize();
-            b = v[1].Normalize();
-            c = v[2].Normalize();
-        }
     }
 }
 

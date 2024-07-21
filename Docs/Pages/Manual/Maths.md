@@ -40,22 +40,81 @@ Onyx defines a number of useful Mathematical constants:
     Onyx::Log::Print("Float Max = %f\n", Maths::Float_Max);
     Onyx::Log::Print("Int Min = %d\n", Maths::Int_Min);
     Onyx::Log::Print("Int Max = %d\n", Maths::Int_Max);
-
 ```
 
-![constants example output](/img_maths_constants_output.png)
-
-## Unit Conversion
+![Constants example output](/img_maths_constants_output.png)
 
 ## Utility Methods
+### Unit Conversion
+Onyx provides unit conversion utility methods between Degrees and Radians, via `Onyx::Maths::DegToRad()` and `Onyx::Maths::RadToDeg()`. 
+
+```cpp
+    //Conversions between degrees and radians
+    float degrees = 60; 
+    float radians = Onyx::Maths::DegToRad(degrees);
+    Log::Print("%f degrees = %f radians.\n", degrees, radians);
+    degrees = Maths::RadToDeg(radians); 
+    Log::Print("%f radians = %f degrees.\n", radians, degrees); 
+```
+
+![Unit conversion example output](/img_maths_unit_conversion_output.png)
+
 ### Clamping a value
+Arithmetic type values can be clamped through `Onyx::Maths::Clamp()`, specifying a minimum and maximum range. 
+
+```cpp
+    //Clamping Arithmetic types
+    //Clamp to the Maximum of the range
+    float value = Onyx::Maths::PI; 
+    float vMin = 0.0f; 
+    float vMax = 1.0f; 
+    float newValue = Maths::Clamp(value, vMin, vMax); 
+    printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
+
+    //Clamp to the Minimum of the range
+    value = -10000.0f; 
+    vMin = -30.0f; 
+    vMax = 40.0f; 
+    newValue = Maths::Clamp(value, vMin, vMax); 
+    printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
+
+    //Value is within our range, so don't modify it. 
+    value = 50.0f; 
+    vMin = 0.0f; 
+    vMax = 100.0f; 
+    newValue = Maths::Clamp(value, vMin, vMax); 
+    printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
+```
+
+![Clamp example output](/img_maths_clamp_output.png)
+
 ### Linear Interpolation
 ### Fast Inverse Square Root
-### Vector Orthonormalization
 
 # Vectors
+Mathemetical Vectors with between 2 and 4 components: 
+    - `Vector2<T>`
+    - `Vector3<T>`
+    - `Vector4<T>`
+
+## Standard Operations
+### Accessing Vector Elements
+### Arithmetic Operators
+## Additional Operations
+### Vector Set
+### Dot Product
+### Cross Product
+## Static Methods
+### Directional Constants
+### Distance
+### Interpolation
+#### Linear Interpolation
+#### Spherical Interpolation
+### Vector Orthonormalization
 
 # Matrices
+
+# Quaternions
 
 
 <div class="section_buttons">
