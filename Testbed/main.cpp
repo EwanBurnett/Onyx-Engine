@@ -109,12 +109,15 @@ int main() {
 
     auto c = Onyx::Maths::Vector3f::Cross(v0, v1); 
 
+    {
+
     Onyx::Maths::Quaternion q0(9, 1, 4, 9);
     Onyx::Maths::Quaternion q1(3, 2, 16, 6);
 
     auto q2 = q0 * q1;
     printf("\n");
     printf("Quaternion Mul = [%f](%f, %f, %f)\n", q2.w, q2.v.x, q2.v.y, q2.v.z);
+    }
 
     Onyx::Maths::Vector3f v(0.0, 0.0, -1.0); 
     Onyx::Maths::Vector3f a(0.0, 1.0, 0.0);
@@ -134,7 +137,23 @@ int main() {
         a.x, a.y, a.z,
         rotated.x, rotated.y, rotated.z, 
         rotMat.x, rotMat.y, rotMat.z);
+    
+
     fclose(logFile);
+    FILE* points = fopen("points.csv", "w+");
+
+    Onyx::Log::SetOutputStream(points);
+    Onyx::Maths::Quaternion q0 = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, 0.0);
+    Onyx::Maths::Quaternion q1 = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, 90.0);
+        Onyx::Log::Print("t, x, y, z\n"); 
+    for(int i = 0; i < 30000; i++){
+        static double t = 0.0; 
+        t += 0.0005; 
+        Onyx::Maths::Quaternion slerp = Onyx::Maths::Quaternion::Slerp(q0, q1, sin(t));
+        Onyx::Log::Print("%f, %f, %f, %f\n", sin(t), slerp.w, slerp.v.x, slerp.v.y ); 
+    }
+
+    fclose(points);
 
     return 0;
 }

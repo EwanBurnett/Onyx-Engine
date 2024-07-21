@@ -139,6 +139,22 @@ namespace Onyx {
                 return { cosTheta, (Vector3<T>::Normalize(axis) * sinTheta) }; 
             }
 
+            /**
+             * @brief Performs Spherical Linear Interpolation between two unit Quaternions. 
+             * @param a 
+             * @param b 
+             * @param t 
+             * @return 
+            */
+            inline static Quaternion Slerp(const Quaternion& a, const Quaternion& b, const double t) {
+                double phi = acos((a.v.x * b.v.x) + (a.v.y * b.v.y) + (a.v.z * b.v.z) * (a.w * b.w)); 
+                return ((sin(phi * (1.0 - t)) / sin(phi)) * a) + ((sin(phi * t) / sin(phi)) * b);
+            }
+
+            inline static Quaternion RotateTowards(const Quaternion& a, const Quaternion& b) {
+                return {};
+            }
+
             static Quaternion FromMatrix4x4(const Matrix4x4<double>& mat);
             Matrix4x4<double> ToMatrix4x4();
             static Matrix4x4<double> ToMatrix4x4(const Quaternion& q);
