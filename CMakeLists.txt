@@ -27,6 +27,7 @@ endif()
 
 # Configuration
 add_compile_definitions($<$<CONFIG:DEBUG>:ONYX_DEBUG>)  # Define ONYX_DEBUG for debug configurations. 
+set(CMAKE_CXX_STANDARD 17)
 
 file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/lib") # Library output directory
 file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/bin") # Binary output directory

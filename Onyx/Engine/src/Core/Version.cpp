@@ -8,7 +8,7 @@
 #include <cstdio>
 
 namespace Onyx{
-    const int ONYX_GIT_HASH = 0xc9c5959;
+    const int ONYX_GIT_HASH = 0xe7efdec;
     const int ONYX_VERSION_MAJOR = 0;
     const int ONYX_VERSION_MINOR = 0;
     const int ONYX_VERSION_ISSUE = 2;

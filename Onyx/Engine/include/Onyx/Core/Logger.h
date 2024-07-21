@@ -56,7 +56,7 @@ namespace Onyx {
         static void _Output(ELogColour colour, FILE* stream, const char* fmt, va_list args);
         static void _Output(ELogColour colour, FILE* stream, const char* fmt, ...);
 
-        static FILE* m_Stream; 
+        static FILE* m_Stream;
     };
 }
 

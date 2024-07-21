@@ -66,7 +66,7 @@ Error
 FILE: F:\Projects\2024\Onyx\Testbed\main.cpp
 	LINE: 33
 	FUNCTION: int __cdecl main(void)
-This Error message will be printed to both stderr and to a file!
+This Error message will be printed to both stderr and to a file![Timing](Timing.md)
 FATAL ERROR
 FILE: F:\Projects\2024\Onyx\Testbed\main.cpp
 	LINE: 34
@@ -78,6 +78,6 @@ This Fatal Error message will be printed to both stderr and to a file!
  
 | Previous          |                              Next |
 |:------------------|----------------------------------:|
-| [Logging](Logging.md) | [Console Variables](CVars.md) |
+| [Table of Contents](Index.md) | [Console Variables](CVars.md) |
  
 </div>

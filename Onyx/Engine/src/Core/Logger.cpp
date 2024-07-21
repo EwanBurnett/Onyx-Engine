@@ -1,4 +1,5 @@
 #include "Onyx/Core/Logger.h"
+#include "Onyx/Core/CVar.h"
 #include <assert.h>
 #if ONYX_PLATFORM_WINDOWS
 #include <Windows.h>
@@ -124,6 +125,14 @@ void Onyx::Log::SetOutputStream(FILE* stream)
 }
 
 void Onyx::Log::_Output(ELogColour colour, FILE* stream, const char* fmt, va_list args) {
+
+    //Optionally also log to stdout
+    const bool* pEnableForwarding = Onyx::CVarManager::Get()->GetCVar_Bool("Engine.Log.EnableForwarding"); 
+    if (pEnableForwarding) {
+        if (stream != stdout && stream != stderr && *pEnableForwarding) {
+            _Output(colour, stdout, fmt, args);
+        }
+    }
 
     //Change the output colour 
 #if ONYX_PLATFORM_WINDOWS

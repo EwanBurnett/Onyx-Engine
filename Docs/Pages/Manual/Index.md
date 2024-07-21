@@ -5,6 +5,8 @@ Manual {#Index}
 - @subpage Logging
 - @subpage CVars
 - @subpage Maths
+- @subpage RNG
+- @subpage Timing
 
 <div class="section_buttons">
  

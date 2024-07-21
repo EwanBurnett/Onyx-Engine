@@ -105,7 +105,7 @@ note: as data handles are stored as `void*`, they must be `reinterpret_cast` int
 
 | Console Variable | Description | Type | Default Value | 
 | - | - | - | - |
-| `Engine.Debug.LogFile` |  | |  |
+| `Engine.Log.EnableForwarding` | Controls whether to forward log output to `stdout`, when the output stream is changed to something else. 0 to disable, 1 to enable. | `Bool` | `false` |
 
 ## Editor Console Variables
 | Console Variable | Description | Type | Default Value | 

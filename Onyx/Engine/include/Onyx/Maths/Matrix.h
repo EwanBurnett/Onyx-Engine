@@ -11,6 +11,7 @@
 #include "Utils.h"
 #include "Vector3.h"
 #include "Vector4.h"
+#include <cstring> 
 
 #define EASY_FUNCTION(x)
 
@@ -24,13 +25,21 @@ namespace Onyx {
         template<typename T = float>
         struct Matrix4x4 {
             Matrix4x4() {
-                //memset(arr, 0, sizeof(T) * 16); 
+                memset(arr, 0, sizeof(T) * 16); 
+
+                arr[0] = 1.0;
+                arr[5] = 1.0;
+                arr[10] = 1.0;
+                arr[15] = 1.0;
             }
 
             union {
                 Vector4<T> vec[4];
                 T arr[16];
             };
+
+            T& operator [] (int index) { return this->arr[index]; };
+            const T& operator [] (int index) const { return this->arr[index]; };
 
             friend Matrix4x4 operator *(Matrix4x4& lhs, const Matrix4x4& rhs) {
                 EASY_FUNCTION(profiler::colors::Yellow800);
