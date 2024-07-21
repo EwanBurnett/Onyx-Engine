@@ -13,7 +13,6 @@
 #include "Vector4.h"
 #include <cstring> 
 
-#define EASY_FUNCTION(x)
 
 namespace Onyx {
     namespace Maths {
@@ -22,7 +21,7 @@ namespace Onyx {
          * @brief A 4x4 Matrix of elements.
          * @tparam T Type for the internal matrix elements. float by default.
         */
-        template<typename T = float>
+        template<typename T>
         struct Matrix4x4 {
             Matrix4x4() {
                 memset(arr, 0, sizeof(T) * 16); 

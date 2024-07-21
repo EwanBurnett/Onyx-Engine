@@ -7,6 +7,10 @@
 namespace Onyx {
 
     namespace Maths {
+        template<typename T>
+        struct Matrix4x4;
+
+
         class Quaternion {
         public:
 
@@ -110,33 +114,34 @@ namespace Onyx {
              * @brief Returns the Quaternion Identity.
             */
             inline static Quaternion Identity() {
-                return{ 1.0, Vector3{0.0, 0.0, 0.0} };
+                return{ 1.0, Vector3<double>{0.0, 0.0, 0.0} };
             }
 
-            /*
-                        inline Vector4<double> Rotation(Vector4<double> vector) {
-                            Quaternion p(vector);
-
-                            return(*this * p * this->Inverse());
-                        }
-            */
-            bool operator != (Quaternion rhs) { return w == rhs.w && v == rhs.v; };
+            bool operator == (Quaternion rhs) { return w == rhs.w && v == rhs.v; };
+            bool operator != (Quaternion rhs) { return !(*this == rhs); };
 
             template<typename T>
             inline static Vector3<T> RotateVector(const Vector3<T> vector, const Vector3<T> axis, const double radians) {
-                double sinTheta = sin(radians / 2.0);
-                double cosTheta = cos(radians / 2.0);
-                Quaternion q(cosTheta, (Vector3<T>::Normalize(axis) * sinTheta));   //Construct a unit quaternion from our rotation
+                const double r = radians / 2.0;
+                const double sinTheta = sin(r);
+                const double cosTheta = cos(r);
+                Quaternion q = Quaternion::FromAxisAngle(axis, radians);  //Construct a unit quaternion from our rotation
+                Quaternion p(0.0, vector);  //Load the Vector into a Quaternion
 
-                double d = sqrt((q.w * q.w) + q.v.LengthSquared());
-                if (q.Inverse() != q.Conjugate()) {
-                    int a = 0;
-                }
-                Quaternion p(0.0, vector);
-                auto rot = (q * p * Conjugate(q)).v;
-                return rot;
+                return (q * p * Conjugate(q)).v;    //As a rotation quaternion, the conjugate is the inverse. 
             }
 
+            template<typename T> 
+            inline static Quaternion FromAxisAngle(const Vector3<T> axis, const double angleRadians) {
+                const double r = angleRadians / 2.0; 
+                const double sinTheta = sin(r); 
+                const double cosTheta = cos(r); 
+                return { cosTheta, (Vector3<T>::Normalize(axis) * sinTheta) }; 
+            }
+
+            static Quaternion FromMatrix4x4(const Matrix4x4<double>& mat);
+            Matrix4x4<double> ToMatrix4x4();
+            static Matrix4x4<double> ToMatrix4x4(const Quaternion& q);
         };
     }
 }

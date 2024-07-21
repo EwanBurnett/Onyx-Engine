@@ -10,6 +10,8 @@
 */
 #include <type_traits>
 #include <cmath> 
+#include <cstdint>
+#include "Onyx/Maths/Utils.h"
 
 namespace Onyx {
     namespace Maths {
@@ -213,7 +215,7 @@ namespace Onyx {
             */
             static Vector3 Slerp(const Vector3<T>& a, const Vector3<T>& b, const double t) {
                 double cosTheta = Dot(a, b);
-                Clamp(cosTheta, -1.0, 1.0);   //Clamp the cosine to the range of ArcCos, to avoid floating point precision errors. 
+                cosTheta = Clamp(cosTheta, -1.0, 1.0);   //Clamp the cosine to the range of ArcCos, to avoid floating point precision errors. 
 
                 double theta = acos(cosTheta) * t;
                 Vector3 v = Normalize(b - (a * cosTheta)); //Compute an intermediate vector
