@@ -11,6 +11,7 @@
 
 #include <type_traits>
 #include <cmath> 
+#include "Quaternion.h"
 
 namespace Onyx {
     namespace Maths {
@@ -23,13 +24,14 @@ namespace Onyx {
         template<typename T>
         struct Vector4 {
 
-            Vector4(Vector3<T> vec) {
+            Vector4(Vector3<T> vec, T W = static_cast<T>(0.0)) {
                 x = vec.x;
                 y = vec.y;
                 z = vec.z;
-                w = static_cast<T>(0.0);
+                w = W; 
             }
 
+            //Vector4(Quaternion q) : x(q.v.x), y(q.v.y), z(q.v.z), w(q.w) {};
 
             Vector4(T X = static_cast<T>(0), T Y = static_cast<T>(0), T Z = static_cast<T>(0), T W = static_cast<T>(0)) {
                 x = X;

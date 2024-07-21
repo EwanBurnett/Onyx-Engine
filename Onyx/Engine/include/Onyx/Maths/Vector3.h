@@ -29,6 +29,9 @@ namespace Onyx {
                 z = Z;
             }
 
+            template<typename T1>
+            Vector3(Vector3<T1> v) : x(v.x), y(v.y), z(v.z) {};
+
             union {
                 struct { T x, y, z; };
                 struct { T u, v, w; };

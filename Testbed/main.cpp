@@ -116,7 +116,20 @@ int main() {
     printf("\n");
     printf("Quaternion Mul = [%f](%f, %f, %f)\n", q2.w, q2.v.x, q2.v.y, q2.v.z);
 
+    Onyx::Maths::Vector3f v(0.0, 0.0, -1.0); 
+    Onyx::Maths::Vector3f a(0.0, 0.0, 1.0);
 
+    float rotationDegrees = 30; 
+    Onyx::Maths::Vector4<float> vf {v.x, v.y, v.z, 1.0f};
+    auto rotated = Onyx::Maths::Quaternion::RotateVector(v, a, Onyx::Maths::DegToRad(rotationDegrees));
+    Onyx::Maths::Vector4f rotMat =  vf * Onyx::Maths::Matrix4x4<float>::ZRotationFromDegrees(rotationDegrees);
+
+    printf("Vector (%f, %f, %f) rotated by %f deg about axis (%f, %f, %f):\n\tQuaternion = (%f, %f, %f)\n\tMatrix = (%f, %f, %f)\n",
+        v.x, v.y, v.z,
+        rotationDegrees,
+        a.x, a.y, a.z,
+        rotated.x, rotated.y, rotated.z, 
+        rotMat.x, rotMat.y, rotMat.z);
     fclose(logFile);
 
     return 0;

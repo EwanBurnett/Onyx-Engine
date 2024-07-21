@@ -41,8 +41,31 @@ namespace Onyx {
             T& operator [] (int index) { return this->arr[index]; };
             const T& operator [] (int index) const { return this->arr[index]; };
 
+            friend Vector4<T> operator *(Vector4<T>& lhs, const Matrix4x4& rhs) {
+                Vector4<T> vec;
+                Matrix4x4 b = Matrix4x4::Transpose(rhs); 
+
+                vec[0] = lhs.Dot(b.vec[0]);
+                vec[1] = lhs.Dot(b.vec[1]);
+                vec[2] = lhs.Dot(b.vec[2]);
+                vec[3] = lhs.Dot(b.vec[3]);
+            
+                return vec;
+            }
+
+            friend Vector4<T> operator *(const Matrix4x4& rhs, Vector4<T>& lhs) {
+                Vector4<T> vec;
+                Matrix4x4 b = Matrix4x4::Transpose(rhs);
+
+                vec[0] = lhs.Dot(b.vec[0]);
+                vec[1] = lhs.Dot(b.vec[1]);
+                vec[2] = lhs.Dot(b.vec[2]);
+                vec[3] = lhs.Dot(b.vec[3]);
+
+                return vec;
+            }
+
             friend Matrix4x4 operator *(Matrix4x4& lhs, const Matrix4x4& rhs) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = {};
                 Matrix4x4 b = Matrix4x4::Transpose(rhs);
 
@@ -69,12 +92,10 @@ namespace Onyx {
                 return mat;
             }
 
-
             /**
              * @return Returns the 4x4 Identity Matrix.
             */
             inline static Matrix4x4 Identity() {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat;
 
                 for (uint8_t i = 0; i < 16; i++) {
@@ -97,7 +118,6 @@ namespace Onyx {
              * @return
             */
             inline static Matrix4x4 Translation(const Vector3<T> translation) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = Matrix4x4::Identity();
 
                 mat.arr[12] = translation.x;
@@ -108,7 +128,6 @@ namespace Onyx {
             }
 
             inline static Matrix4x4 XRotation(const T radians) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = Matrix4x4::Identity();
 
 
@@ -121,7 +140,6 @@ namespace Onyx {
             }
 
             inline static Matrix4x4 YRotation(const T radians) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = Matrix4x4::Identity();
 
                 mat.arr[0] = cos(radians);
@@ -134,7 +152,6 @@ namespace Onyx {
 
 
             inline static Matrix4x4 ZRotation(const T radians) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = Matrix4x4::Identity();
 
                 mat.arr[0] = cos(radians);
@@ -146,25 +163,21 @@ namespace Onyx {
             }
 
             inline static Matrix4x4 XRotationFromDegrees(const T degrees) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 const T radians = DegToRad(degrees);
                 return Matrix4x4::XRotation(radians);
             }
 
             inline static Matrix4x4 YRotationFromDegrees(const T degrees) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 const T radians = DegToRad(degrees);
                 return Matrix4x4::YRotation(radians);
             }
 
             inline static Matrix4x4 ZRotationFromDegrees(const T degrees) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 const T radians = DegToRad(degrees);
                 return Matrix4x4::ZRotation(radians);
             }
 
             inline static Matrix4x4 Scaling(const Vector3<T> scaling) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = Matrix4x4::Identity();
 
                 mat.arr[0] = scaling.x;
@@ -175,7 +188,6 @@ namespace Onyx {
             }
 
             inline static Matrix4x4 View(Vector3<T> origin, Vector3<T> forwards = Vector3<T>::Forwards(), Vector3<T> right = Vector3<T>::Right(), Vector3<T> up = Vector3<T>::Up()) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Orthonormalize(forwards, up, right);
 
                 Vector3<T> position = {
@@ -197,7 +209,6 @@ namespace Onyx {
             }
 
             inline static Matrix4x4 ProjectionFoVRadians(const double fovRadians, const double aspectRatio, const double nearPlane, const double farPlane) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = Matrix4x4::Identity();
 
                 const double a = tan(fovRadians / 2.0);
@@ -213,13 +224,11 @@ namespace Onyx {
             }
 
             inline static Matrix4x4 ProjectionFoVDegrees(const T fovDegrees, const T aspectRatio, const T nearPlane, const T farPlane) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 const T fovRadians = DegToRad(fovDegrees);
                 return ProjectionFoVRadians(fovRadians, aspectRatio, nearPlane, farPlane);
             }
 
             inline static Matrix4x4 ProjectionOrthographic(const T top, const T bottom, const T left, const T right, const T farPlane, const T nearPlane) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = Matrix4x4::Identity();
 
                 const T x = (right - left);
@@ -238,7 +247,6 @@ namespace Onyx {
 
 
             inline static constexpr Matrix4x4 Transpose(const Matrix4x4& matrix) {
-                //EASY_FUNCTION(profiler::colors::Yellow800);
                 Matrix4x4 mat = matrix;
 
                 //Preserve 0, 5, 10, 15
@@ -260,7 +268,6 @@ namespace Onyx {
 
 
             inline static Matrix4x4 Inverse(const Matrix4x4& matrix, bool& inverseExists) {
-                EASY_FUNCTION(profiler::colors::Yellow800);
 
                 Matrix4x4 inv = {};
                 T det;
