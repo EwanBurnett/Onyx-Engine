@@ -40,6 +40,18 @@ namespace Onyx {
             T& operator [] (int index) { return this->arr[index]; };
             const T& operator [] (int index) const { return this->arr[index]; };
 
+            bool operator ==(const Matrix4x4<T>& rhs) {
+                bool isEqual = true;
+                for (uint8_t i = 0; i < 16; i++) {
+                    isEqual &= arr[i] == rhs.arr[i];
+                }
+                return isEqual;
+            }
+
+            bool operator !=(const Matrix4x4<T>& rhs) {
+                return !(*this == rhs); 
+            }
+
             friend Vector4<T> operator *(Vector4<T>& lhs, const Matrix4x4& rhs) {
                 Vector4<T> vec;
                 Matrix4x4 b = Matrix4x4::Transpose(rhs); 

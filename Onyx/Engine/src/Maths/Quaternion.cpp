@@ -79,17 +79,17 @@ Matrix4x4<double> Quaternion::ToMatrix4x4(const Quaternion& q) {
     const Vector3d v_2 = (q.v * q.v);
 
     out[0] = w_2 + v_2.x - v_2.y - v_2.z;
-    out[1] = (2.0 * q.v.x * q.v.y) - (2.0 * q.w * q.v.y);
-    out[2] = (2.0 * q.v.x * q.v.z) + (2.0 * q.w * q.v.x);
+    out[1] = -((2.0 * q.v.x * q.v.y) - (2.0 * q.w * q.v.z));    //Negate some terms to ensure the same handedness. 
+    out[2] = -((2.0 * q.v.x * q.v.z) + (2.0 * q.w * q.v.y));
     out[3] = 0.0;
 
-    out[4] = (2.0 * q.v.x * q.v.y) + (2.0 * q.w * q.v.z);
+    out[4] = -((2.0 * q.v.x * q.v.y) + (2.0 * q.w * q.v.z));
     out[5] = w_2 - v_2.x + v_2.y - v_2.z;
-    out[6] = (2.0 * q.v.y * q.v.z) - (2.0 * q.w * q.v.x);
+    out[6] = -((2.0 * q.v.y * q.v.z) - (2.0 * q.w * q.v.x));
     out[7] = 0.0;
 
-    out[8] = (2.0 * q.v.x * q.v.z) - (2.0 * q.w * q.v.y);
-    out[9] = (2.0 * q.v.y * q.v.z) + (2.0 * q.w * q.v.x);
+    out[8] = -((2.0 * q.v.x * q.v.z) - (2.0 * q.w * q.v.y));
+    out[9] = -((2.0 * q.v.y * q.v.z) + (2.0 * q.w * q.v.x));
     out[10] = (w_2 - v_2.x - v_2.y + v_2.z);
     out[11] = 0.0;
 

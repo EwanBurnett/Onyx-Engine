@@ -1,10 +1,6 @@
 #include <gtest/gtest.h>
 #include <Onyx/Maths/Maths.h> 
 
-TEST(Onyx, TestInit) {
-    EXPECT_EQ(0, 0);
-}
-
 //UTILS
 
 TEST(Maths, Utils_Deg2Rad) {
@@ -124,21 +120,81 @@ TEST(Maths, Utils_Clamp) {
 }
 
 TEST(Maths, Utils_Lerp) {
+    float f0 = 0.0f;
+    float f1 = 1.0f;
 
+    float half = (f1 + f0) / 2.0;
+
+    //t = 1.0
+    {
+        float t = 1.0f;
+        float v = Onyx::Maths::Lerp(f0, f1, t);
+
+        EXPECT_FLOAT_EQ(v, f1);
+    }
+
+    //t = 0.0
+    {
+        float t = 0.0f;
+        float v = Onyx::Maths::Lerp(f0, f1, t);
+
+        EXPECT_FLOAT_EQ(v, f0);
+    }
+
+    //t = 0.5
+    {
+        float t = 0.5f;
+        float v = Onyx::Maths::Lerp(f0, f1, t);
+
+        EXPECT_FLOAT_EQ(v, half);
+    }
+
+    //t = 2.0
+    {
+        float t = 2.0f;
+        float v = Onyx::Maths::Lerp(f0, f1, t);
+
+        EXPECT_FLOAT_EQ(v, f1 * 2.0f);
+    }
+    //t = -1.0
+    {
+        float t = -1.0f;
+        float v = Onyx::Maths::Lerp(f0, f1, t);
+
+        EXPECT_FLOAT_EQ(v, f1 * -1.0f);
+    }
 }
 
 TEST(Maths, Utils_RSqrt) {
+    float n = 50;
 
-}
+    float sqrt_n = sqrt(n);
+    float rsqrt_n = 1.0 / Onyx::Maths::RSqrt(n);
 
-TEST(Maths, Utils_Orthonormalize) {
-
+    EXPECT_NEAR(sqrt_n, rsqrt_n, 0.1);
 }
 
 //Vector 2
 
-TEST(Maths, Vector2_Construction) {}
-TEST(Maths, Vector2_Addition) {}
+TEST(Maths, Vector2_Construction) {
+    Onyx::Maths::Vector2<int> iv(1, -1);
+    Onyx::Maths::Vector2<float> fv(2.0f, -2.0f);
+    Onyx::Maths::Vector2<double> dv(3.0, -3.0);
+
+    EXPECT_EQ(iv.x, 1);
+    EXPECT_EQ(iv.y, -1);
+
+    EXPECT_FLOAT_EQ(fv.x, 2.0f);
+    EXPECT_FLOAT_EQ(fv.y, -2.0f);
+
+    EXPECT_DOUBLE_EQ(dv.x, 3.0);
+    EXPECT_DOUBLE_EQ(dv.y, -3.0);
+}
+
+TEST(Maths, Vector2_Addition) {
+
+}
+
 TEST(Maths, Vector2_Subtraction) {}
 TEST(Maths, Vector2_Multiplication) {}
 TEST(Maths, Vector2_Division) {}
@@ -153,6 +209,10 @@ TEST(Maths, Vector2_Length) {}
 TEST(Maths, Vector2_Length_Squared) {}
 TEST(Maths, Vector2_Normalize) {}
 TEST(Maths, Vector2_Set) {}
+TEST(Maths, Vector2_Distance) {};
+TEST(Maths, Vector2_DistanceSquared) {};
+TEST(Maths, Vector2_Lerp) {};
+TEST(Maths, Vector2_Slerp) {};
 
 //Vector 3
 TEST(Maths, Vector3_Construction) {}
@@ -171,7 +231,22 @@ TEST(Maths, Vector3_Length) {}
 TEST(Maths, Vector3_Length_Squared) {}
 TEST(Maths, Vector3_Normalize) {}
 TEST(Maths, Vector3_Set) {}
-TEST(Maths, Vector3_Cross) {}
+
+TEST(Maths, Vector3_Cross) {
+    Onyx::Maths::Vector3<float> a = { 1.0, 2.0, 3.0 };
+    Onyx::Maths::Vector3<float> b = { 3.0, 4.0, 5.0 };
+
+    Onyx::Maths::Vector3<float> cross = Onyx::Maths::Vector3<float>::Cross(a, b);
+
+    EXPECT_FLOAT_EQ(cross.x, -2.0f);
+    EXPECT_FLOAT_EQ(cross.y, 4.0f);
+    EXPECT_FLOAT_EQ(cross.z, -2.0f);
+}
+
+TEST(Maths, Vector3_Distance) {}; 
+TEST(Maths, Vector3_DistanceSquared) {}; 
+TEST(Maths, Vector3_Lerp) {};
+TEST(Maths, Vector3_Slerp) {};
 
 //Vector 4
 TEST(Maths, Vector4_Construction) {}
@@ -207,4 +282,39 @@ TEST(Maths, Matrix4x4_Projection_Orthographic) {}
 TEST(Maths, Matrix4x4_Transpose) {}
 TEST(Maths, Matrix4x4_Inverse) {}
 
+//Quaternion
+TEST(Maths, Quaternion_Construction) {};
+TEST(Maths, Quaternion_Identity) {};
+TEST(Maths, Quaternion_Multiplication) {};
+TEST(Maths, Quaternion_Addition) {};
+TEST(Maths, Quaternion_Conjugate) {};
+TEST(Maths, Quaternion_Norm) {};
+TEST(Maths, Quaternion_Inverse) {};
+TEST(Maths, Quaternion_Comparison) {};
+TEST(Maths, Quaternion_FromAxisAngle) {};
+TEST(Maths, Quaternion_ToAxisAngle) {};
+TEST(Maths, Quaternion_FromMatrix4x4) {};
+TEST(Maths, Quaternion_ToMatrix4x4) {
 
+    double theta = Onyx::Maths::DegToRad(30.0);
+
+    Onyx::Maths::Quaternion qx = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 0.0, 0.0 }, theta);
+    Onyx::Maths::Quaternion qy = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, theta);
+    Onyx::Maths::Quaternion qz = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 0.0, 1.0 }, theta);
+
+    Onyx::Maths::Matrix4x4<double> mx = qx.ToMatrix4x4();
+    Onyx::Maths::Matrix4x4<double> my = qy.ToMatrix4x4();
+    Onyx::Maths::Matrix4x4<double> mz = qz.ToMatrix4x4();
+    auto rx = Onyx::Maths::Matrix4x4<double>::XRotation(theta);
+    auto ry = Onyx::Maths::Matrix4x4<double>::YRotation(theta);   
+    auto rz = Onyx::Maths::Matrix4x4<double>::ZRotation(theta);    
+
+    EXPECT_EQ(mx == rx, true);
+    EXPECT_EQ(my == ry, true);
+    EXPECT_EQ(mz == rz, true);
+
+};
+TEST(Maths, Quaternion_FromEulerAngles) {};
+TEST(Maths, Quaternion_ToEulerAngles) {};
+TEST(Maths, Quaternion_RotateVectorAxis) {};
+TEST(Maths, Quaternion_Slerp) {};

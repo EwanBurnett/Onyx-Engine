@@ -31,16 +31,6 @@ namespace Onyx {
 
         //Helpers
 
-        template<typename T>
-        struct Vector2;
-
-        template<typename T>
-        struct Vector3;
-
-        template<typename T>
-        struct Vector4;
-
-
         /**
          * @brief Clamps a Value to a given range.
          * @tparam T Arithmetic type to Clamp
@@ -52,7 +42,7 @@ namespace Onyx {
         template <typename T>
         inline T Clamp(const T value, const T min, const T max) {
 
-            T v = value; 
+            T v = value;
 
             if (value < min) {
                 v = min;
@@ -61,7 +51,7 @@ namespace Onyx {
                 v = max;
             }
 
-            return v; 
+            return v;
         };
 
         /**
@@ -122,7 +112,6 @@ namespace Onyx {
 
             return y;
         }
-
 
     }
 }

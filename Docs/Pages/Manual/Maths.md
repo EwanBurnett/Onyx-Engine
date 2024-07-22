@@ -89,7 +89,31 @@ Arithmetic type values can be clamped through `Onyx::Maths::Clamp()`, specifying
 ![Clamp example output](/img_maths_clamp_output.png)
 
 ### Linear Interpolation
+`Onyx::Maths::Lerp()` Provides Scalar Linear Interpolation between `a` and `b` by constant `t`, defined as \f$ lerp(a, b, t) = ((b - a) \cdot t) \f$.
+```cpp
+    //Linear interpolation
+    float a = 0.0; 
+    float b = 1.0; 
+
+    float v; 
+    v = Onyx::Maths::Lerp(a, b, 0.0f);  // v = a = 0.0
+    v = Onyx::Maths::Lerp(a, b, 1.0f);  // v = b = 1.0
+    v = Onyx::Maths::Lerp(a, b, -50.0f);  // v = (b - a) * t = -50.0
+
+
+```
+
 ### Fast Inverse Square Root
+`Onyx::Maths::RSqrt()` Computes an approximation of the Inverse Square Root, using the [Fast Inverse Square Root algorithm](https://en.wikipedia.org/wiki/Fast_inverse_square_root). This yields an approximate Reciprocal of the Square Root of x, and should be used where `sqrt` precision is not worth the cost of the instruction. 
+
+```cpp
+    //Inverse Square Root
+    float x = 25;
+
+    float sqrt_x = sqrt(n); // sqrt_x == 5
+    float rsqrt_x = 1.0 / Onyx::Maths::RSqrt(x);    //rsqrt_x == ~5
+```
+
 
 # Vectors
 Mathemetical Vectors with between 2 and 4 components: 

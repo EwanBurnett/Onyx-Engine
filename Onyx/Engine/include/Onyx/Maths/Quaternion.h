@@ -10,6 +10,8 @@ namespace Onyx {
         template<typename T>
         struct Matrix4x4;
 
+        template<typename T>
+        struct Vector4;
 
         class Quaternion {
         public:
@@ -27,25 +29,36 @@ namespace Onyx {
             Quaternion(Vector4<T> v) : w(v.w), v({ v.x, v.y, v.x }) {};
 
 
-            inline Quaternion operator *(const Quaternion& rhs) {
-                Vector3d _v = Vector3<double>::Cross(v, rhs.v) + (rhs.w * v) + (w * rhs.v);// -(Vector3<double>::Dot(v, rhs.v)));
-                double _w = (w * rhs.w) - Vector3<double>::Dot(v, rhs.v);
+            inline friend Quaternion operator *(const Quaternion& lhs, const Quaternion& rhs) {
+                Vector3d _v = Vector3<double>::Cross(lhs.v, rhs.v) + (rhs.w * lhs.v) + (lhs.w * rhs.v);// -(Vector3<double>::Dot(v, rhs.v)));
+                double _w = (lhs.w * rhs.w) - Vector3<double>::Dot(lhs.v, rhs.v);
 
                 return { _w, _v };
             }
 
             template<typename T>
+            inline friend Vector3<T> operator * (const Vector3<T>& lhs, const Quaternion& rhs) {
+                Quaternion p(0.0, lhs);  //Load the Vector into a Quaternion
+
+                return (rhs * p * rhs.Conjugate()).v;    //As a rotation quaternion, the conjugate is the inverse. 
+            }
+
+            template<typename T>
+            inline friend Vector3<T> operator * (const Quaternion& lhs, const Vector3<T>& rhs) {
+                Quaternion p(0.0, rhs);  //Load the Vector into a Quaternion
+
+                return (lhs * p * lhs.Conjugate()).v;    //As a rotation quaternion, the conjugate is the inverse. 
+            }
+
+            template<typename T, typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true>
             inline friend Quaternion operator *(const Quaternion& lhs, const T& rhs) {
-                static_assert(std::is_arithmetic<T>(), "T Must be Arithmetic!\n");
 
                 return { Quaternion(rhs, {0.0, 0.0, 0.0}) * lhs };
             }
 
 
-            template<typename T>
+            template<typename T, typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true>
             inline friend Quaternion operator *(const T& lhs, const Quaternion& rhs) {
-                static_assert(std::is_arithmetic<T>(), "T Must be Arithmetic!\n");
-
                 return { Quaternion(lhs, Vector3{0.0, 0.0, 0.0}) * rhs };
             }
 
@@ -131,33 +144,59 @@ namespace Onyx {
                 return (q * p * Conjugate(q)).v;    //As a rotation quaternion, the conjugate is the inverse. 
             }
 
-            template<typename T> 
+            template<typename T>
             inline static Quaternion FromAxisAngle(const Vector3<T> axis, const double angleRadians) {
-                const double r = angleRadians / 2.0; 
-                const double sinTheta = sin(r); 
-                const double cosTheta = cos(r); 
-                return { cosTheta, (Vector3<T>::Normalize(axis) * sinTheta) }; 
+                const double r = angleRadians / 2.0;
+                const double sinTheta = sin(r);
+                const double cosTheta = cos(r);
+                return { cosTheta, (Vector3<T>::Normalize(axis) * sinTheta) };
             }
 
             /**
-             * @brief Performs Spherical Linear Interpolation between two unit Quaternions. 
-             * @param a 
-             * @param b 
-             * @param t 
-             * @return 
+             * @brief Performs Spherical Linear Interpolation between two unit Quaternions.
+             * @param a
+             * @param b
+             * @param t Interpolation constant, where 0 <= t <= 1
+             * @return
             */
             inline static Quaternion Slerp(const Quaternion& a, const Quaternion& b, const double t) {
-                double phi = acos((a.v.x * b.v.x) + (a.v.y * b.v.y) + (a.v.z * b.v.z) * (a.w * b.w)); 
+                double phi = acos((a.v.x * b.v.x) + (a.v.y * b.v.y) + (a.v.z * b.v.z) * (a.w * b.w));
                 return ((sin(phi * (1.0 - t)) / sin(phi)) * a) + ((sin(phi * t) / sin(phi)) * b);
             }
 
             inline static Quaternion RotateTowards(const Quaternion& a, const Quaternion& b) {
-                return {};
+                return {}; //TODO: 
             }
 
             static Quaternion FromMatrix4x4(const Matrix4x4<double>& mat);
             Matrix4x4<double> ToMatrix4x4();
             static Matrix4x4<double> ToMatrix4x4(const Quaternion& q);
+
+            template<typename T>
+            static Vector3<T> ToEulerAngles(const Quaternion& q) {
+                double roll = 0.0;
+                double pitch = asin(2.0 * ((q.w * q.v.y) - (q.v.x * q.v.z)));
+                double yaw = 0.0;
+
+                //Resolve Gimbal Lock
+                if (pitch == PI / 2.0) {
+                    yaw = -2.0 * atan2(q.v.x, q.w);
+                }
+                else if (pitch == -(PI / 2.0)) {
+                    yaw = 2.0 * atan2(q.v.x, q.w);
+                }
+                else {
+                    roll = atan2(2.0 * ((q.w * q.v.x) + (q.v.y * q.v.z)), ((q.w * q.w) - (q.v.x * q.v.x) - (q.v.y * q.v.y) + (q.v.z * q.v.z)));
+                    yaw = atan2(2.0 * ((q.w * q.v.z) + (q.v.x * q.v.y)), ((q.w * q.w) + (q.v.x * q.v.x) - (q.v.y * q.v.y) + (q.v.z * q.v.z)));
+                }
+
+                return { roll, pitch, yaw };
+            }
+
+            template<typename T>
+            static Quaternion FromEulerAngles(const Vector3<T>& eulerAngles) {
+                return {}; //TODO:
+            }
         };
     }
 }
