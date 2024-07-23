@@ -1,14 +1,27 @@
 Maths {#Maths}
 ===
 
-  The distance between \f$(x_1,y_1)\f$ and \f$(x_2,y_2)\f$ is 
-  \f$\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}\f$.
+# Standards
 ## Coordinate System
 - Left-handed Cartesian Coordinate system
-    - Z+ goes into the screen, Z- comes out of it. 
+    - Z+ is Away from the viewer, Z- is towards them. 
     - X+ is Right, X- is Left
     - Y+ is Up, Y- is Down
 
+## Euler Angles
+- Roll 
+    - Rotation about the Z+ axis
+- Pitch
+    - Rotation about the X+ axis
+- Yaw
+    - Rotation about the Y+ axis
+- Rotation Order
+    - Yaw, then Pitch, then Roll
+
+## Vector / Matrix Ordering
+- Row-Major Multiplication Order
+    - e.g. `world * (view * projection)`
+    
 # Utilities
 Found in `Onyx/Maths/Utils.h`.
 

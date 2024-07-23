@@ -192,11 +192,45 @@ TEST(Maths, Vector2_Construction) {
 }
 
 TEST(Maths, Vector2_Addition) {
+    Onyx::Maths::Vector2d a(-100.0, 100.0);
+    Onyx::Maths::Vector2d b(0.204, -0.0001);
 
+    Onyx::Maths::Vector2d val = a + b;
+
+    EXPECT_DOUBLE_EQ(val.x, a.x + b.x);
+    EXPECT_DOUBLE_EQ(val.y, a.y + b.y);
 }
 
-TEST(Maths, Vector2_Subtraction) {}
-TEST(Maths, Vector2_Multiplication) {}
+TEST(Maths, Vector2_Subtraction) {
+    Onyx::Maths::Vector2d a(-100.0, 100.0);
+    Onyx::Maths::Vector2d b(0.204, -0.0001);
+
+    Onyx::Maths::Vector2d val = a - b;
+
+    EXPECT_DOUBLE_EQ(val.x, a.x - b.x);
+    EXPECT_DOUBLE_EQ(val.y, a.y - b.y);
+}
+
+TEST(Maths, Vector2_Multiplication) {
+    const double scale = 300.0; 
+
+    const Onyx::Maths::Vector2d a(0.5, -0.5); 
+    const Onyx::Maths::Vector2d b(2.0, 0.0); 
+
+    const auto a_scaled_rhs = a * scale; 
+    const auto a_scaled_lhs = scale * a; 
+    const auto ab = a * b; 
+
+    EXPECT_DOUBLE_EQ(a_scaled_lhs.x, a.x * scale);
+    EXPECT_DOUBLE_EQ(a_scaled_lhs.y, a.y * scale);
+
+    EXPECT_DOUBLE_EQ(a_scaled_rhs.x, a_scaled_lhs.x); 
+    EXPECT_DOUBLE_EQ(a_scaled_rhs.y, a_scaled_lhs.y); 
+
+    EXPECT_DOUBLE_EQ(ab.x, a.x * b.x); 
+    EXPECT_DOUBLE_EQ(ab.y, a.y * b.y); 
+}
+
 TEST(Maths, Vector2_Division) {}
 TEST(Maths, Vector2_Scalar_Addition) {}
 TEST(Maths, Vector2_Scalar_Subtraction) {}
@@ -243,8 +277,8 @@ TEST(Maths, Vector3_Cross) {
     EXPECT_FLOAT_EQ(cross.z, -2.0f);
 }
 
-TEST(Maths, Vector3_Distance) {}; 
-TEST(Maths, Vector3_DistanceSquared) {}; 
+TEST(Maths, Vector3_Distance) {};
+TEST(Maths, Vector3_DistanceSquared) {};
 TEST(Maths, Vector3_Lerp) {};
 TEST(Maths, Vector3_Slerp) {};
 
@@ -291,9 +325,55 @@ TEST(Maths, Quaternion_Conjugate) {};
 TEST(Maths, Quaternion_Norm) {};
 TEST(Maths, Quaternion_Inverse) {};
 TEST(Maths, Quaternion_Comparison) {};
-TEST(Maths, Quaternion_FromAxisAngle) {};
-TEST(Maths, Quaternion_ToAxisAngle) {};
+
+TEST(Maths, Quaternion_FromAxisAngle) {
+    double theta = Onyx::Maths::DegToRad(30.0); 
+
+    Onyx::Maths::Quaternion qx = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 0.0, 0.0 }, theta);
+    Onyx::Maths::Quaternion qy = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, theta);
+    Onyx::Maths::Quaternion qz = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 0.0, 1.0 }, theta);
+
+    EXPECT_NEAR(qx.w, 0.9659, 0.0001); 
+    EXPECT_NEAR(qx.v.x, 0.2588, 0.0001); 
+
+    EXPECT_NEAR(qy.w, 0.9659, 0.0001); 
+    EXPECT_NEAR(qy.v.y, 0.2588, 0.0001); 
+
+    EXPECT_NEAR(qz.w, 0.9659, 0.0001); 
+    EXPECT_NEAR(qz.v.z, 0.2588, 0.0001); 
+
+};
+
+TEST(Maths, Quaternion_ToAxisAngle) {
+    double theta = Onyx::Maths::DegToRad(30.0); 
+
+    Onyx::Maths::Quaternion qx = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 0.0, 0.0 }, theta);
+
+    auto ax = qx.ToAxisAngle<double>();
+    EXPECT_NEAR(ax.x, 1.0, 0.0001);
+    EXPECT_NEAR(ax.y, 0.0, 0.0001);
+    EXPECT_NEAR(ax.z, 0.0, 0.0001);
+    EXPECT_NEAR(ax.w, theta, 0.0001);
+
+    Onyx::Maths::Quaternion qy = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, theta);
+    auto ay = qy.ToAxisAngle<double>();
+    EXPECT_NEAR(ay.x, 0.0, 0.0001);
+    EXPECT_NEAR(ay.y, 1.0, 0.0001);
+    EXPECT_NEAR(ay.z, 0.0, 0.0001);
+    EXPECT_NEAR(ay.w, theta, 0.0001);
+
+    Onyx::Maths::Quaternion qz = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 0.0, 1.0 }, theta);
+    auto az = qz.ToAxisAngle<double>();
+    EXPECT_NEAR(az.x, 0.0, 0.0001);
+    EXPECT_NEAR(az.y, 0.0, 0.0001);
+    EXPECT_NEAR(az.z, 1.0, 0.0001);
+    EXPECT_NEAR(az.w, theta, 0.0001);
+
+
+};
+
 TEST(Maths, Quaternion_FromMatrix4x4) {};
+
 TEST(Maths, Quaternion_ToMatrix4x4) {
 
     double theta = Onyx::Maths::DegToRad(30.0);
@@ -305,16 +385,55 @@ TEST(Maths, Quaternion_ToMatrix4x4) {
     Onyx::Maths::Matrix4x4<double> mx = qx.ToMatrix4x4();
     Onyx::Maths::Matrix4x4<double> my = qy.ToMatrix4x4();
     Onyx::Maths::Matrix4x4<double> mz = qz.ToMatrix4x4();
-    auto rx = Onyx::Maths::Matrix4x4<double>::XRotation(theta);
-    auto ry = Onyx::Maths::Matrix4x4<double>::YRotation(theta);   
-    auto rz = Onyx::Maths::Matrix4x4<double>::ZRotation(theta);    
+
+    const auto rx = Onyx::Maths::Matrix4x4<double>::XRotation(theta);
+    const auto ry = Onyx::Maths::Matrix4x4<double>::YRotation(theta);
+    const auto rz = Onyx::Maths::Matrix4x4<double>::ZRotation(theta);
 
     EXPECT_EQ(mx == rx, true);
     EXPECT_EQ(my == ry, true);
     EXPECT_EQ(mz == rz, true);
 
 };
-TEST(Maths, Quaternion_FromEulerAngles) {};
-TEST(Maths, Quaternion_ToEulerAngles) {};
+
+TEST(Maths, Quaternion_FromEulerAngles) {
+
+    Onyx::Maths::Vector3d axis{-40.0, 30.0, 90.0};
+    Onyx::Maths::Quaternion q = Onyx::Maths::Quaternion::FromEulerAngles(axis);
+
+    auto m0 = q.ToMatrix4x4();
+
+    auto mx = Onyx::Maths::Matrix4x4<double>::XRotationFromDegrees(axis.x);
+    auto my = Onyx::Maths::Matrix4x4<double>::YRotationFromDegrees(axis.y);
+    auto mz = Onyx::Maths::Matrix4x4<double>::ZRotationFromDegrees(axis.z);
+
+    auto rot = mx * (my * mz); 
+
+    //Rotate a point by both the quaternion and manual rotation matrix
+    Onyx::Maths::Vector4d point{3.0, 400.0, -1.0, 1.0};
+
+    auto p0 = point * q; 
+    auto p1 = point * rot; 
+
+    EXPECT_NEAR(p0.x, p1.x, 0.0001);
+    EXPECT_NEAR(p0.y, p1.y, 0.0001);
+    EXPECT_NEAR(p0.z, p1.z, 0.0001);
+};
+
+TEST(Maths, Quaternion_ToEulerAngles) {
+    double theta = Onyx::Maths::DegToRad(30.0); 
+
+    Onyx::Maths::Quaternion qx = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 0.0, 0.0 }, theta);
+    auto ax = qx.ToEulerAngles<double>(); 
+    EXPECT_NEAR(ax.x, theta, 0.001); 
+
+    Onyx::Maths::Quaternion qy = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, theta);
+    auto ay = qy.ToEulerAngles<double>(); 
+    EXPECT_NEAR(ay.y, theta, 0.001); 
+
+    Onyx::Maths::Quaternion qz = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 0.0, 1.0 }, theta);
+    auto az = qz.ToEulerAngles<double>(); 
+    EXPECT_NEAR(az.z, theta, 0.001); 
+};
 TEST(Maths, Quaternion_RotateVectorAxis) {};
 TEST(Maths, Quaternion_Slerp) {};

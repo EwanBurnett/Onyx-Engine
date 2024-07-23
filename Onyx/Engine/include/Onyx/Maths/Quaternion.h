@@ -50,6 +50,21 @@ namespace Onyx {
                 return (lhs * p * lhs.Conjugate()).v;    //As a rotation quaternion, the conjugate is the inverse. 
             }
 
+            template<typename T>
+            inline friend Vector4<T> operator * (const Vector4<T>& lhs, const Quaternion& rhs) {
+                Quaternion p(0.0, Vector3<T>{lhs.x, lhs.y, lhs.z});  //Load the Vector into a Quaternion
+
+                return (rhs * p * rhs.Conjugate()).v;    //As a rotation quaternion, the conjugate is the inverse. 
+            }
+
+            template<typename T>
+            inline friend Vector4<T> operator * (const Quaternion& lhs, const Vector4<T>& rhs) {
+                Quaternion p(0.0, Vector3<T>{ rhs.x, rhs.y, rhx.z });  //Load the Vector into a Quaternion
+
+                return (lhs * p * lhs.Conjugate()).v;    //As a rotation quaternion, the conjugate is the inverse. 
+            }
+
+
             template<typename T, typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true>
             inline friend Quaternion operator *(const Quaternion& lhs, const T& rhs) {
 
@@ -144,6 +159,33 @@ namespace Onyx {
                 return (q * p * Conjugate(q)).v;    //As a rotation quaternion, the conjugate is the inverse. 
             }
 
+
+            template<typename T>
+            inline static Vector4<T> ToAxisAngle(const Quaternion& q) {
+
+                //In the case of the Quaternion Identity, 
+                if (q.w == 1.0) {
+                    return { 1.0, 0.0, 0.0, 0.0 }; 
+                }
+                
+                //Extract the rotation angle from w
+                double theta = 2.0 * (acos(q.w));
+
+                // If theta is not 0, find the rotation axis unit vector
+                if (theta != 0.0) {
+                    return { q.v.x / sin(theta / 2.0), q.v.y / sin(theta / 2.0), q.v.z / sin(theta / 2.0), theta };
+                }
+
+                else {
+                    return { 0.0, 0.0, 0.0, 0.0 }; 
+                }
+            }
+
+            template<typename T> 
+            inline Vector4<T> ToAxisAngle() {
+                return Quaternion::ToAxisAngle<T>(*this); 
+            }
+
             template<typename T>
             inline static Quaternion FromAxisAngle(const Vector3<T> axis, const double angleRadians) {
                 const double r = angleRadians / 2.0;
@@ -172,11 +214,20 @@ namespace Onyx {
             Matrix4x4<double> ToMatrix4x4();
             static Matrix4x4<double> ToMatrix4x4(const Quaternion& q);
 
+
+            //From Yaw-Pitch-Roll (z, y, x)
+            //To Pitch-Yaw-Roll (x, y, z)
+            // x -> y, y -> x, z -> z
+            // x -> y, y -> x, z -> z
+            //Roll = z, Pitch = x, Yaw = y
             template<typename T>
             static Vector3<T> ToEulerAngles(const Quaternion& q) {
-                double roll = 0.0;
+
+
+                double roll = atan2(2.0 * ((q.w * q.v.x) + (q.v.y * q.v.z)), ((q.w * q.w) - (q.v.x * q.v.x) - (q.v.y * q.v.y) + (q.v.z * q.v.z)));
                 double pitch = asin(2.0 * ((q.w * q.v.y) - (q.v.x * q.v.z)));
-                double yaw = 0.0;
+                double yaw = atan2(2.0 * ((q.w * q.v.z) + (q.v.x * q.v.y)), ((q.w * q.w) + (q.v.x * q.v.x) - (q.v.y * q.v.y) - (q.v.z * q.v.z)));
+
 
                 //Resolve Gimbal Lock
                 if (pitch == PI / 2.0) {
@@ -185,17 +236,44 @@ namespace Onyx {
                 else if (pitch == -(PI / 2.0)) {
                     yaw = 2.0 * atan2(q.v.x, q.w);
                 }
-                else {
-                    roll = atan2(2.0 * ((q.w * q.v.x) + (q.v.y * q.v.z)), ((q.w * q.w) - (q.v.x * q.v.x) - (q.v.y * q.v.y) + (q.v.z * q.v.z)));
-                    yaw = atan2(2.0 * ((q.w * q.v.z) + (q.v.x * q.v.y)), ((q.w * q.w) + (q.v.x * q.v.x) - (q.v.y * q.v.y) + (q.v.z * q.v.z)));
-                }
 
-                return { roll, pitch, yaw };
+                return { static_cast<T>(roll), static_cast<T>(pitch), static_cast<T>(yaw) };
             }
 
             template<typename T>
-            static Quaternion FromEulerAngles(const Vector3<T>& eulerAngles) {
-                return {}; //TODO:
+            inline Vector3<T> ToEulerAngles() {
+                return ToEulerAngles<T>(*this);
+            }
+
+
+            //Roll = z, Pitch = x, Yaw = y
+            template<typename T>
+            static Quaternion FromEulerAngles(const Vector3<T>& eulerDegrees) {
+
+                //Convert the input angles to Radians, and halve.
+                const auto radians = eulerDegrees * Deg2Rad * 0.5;
+
+                //Precompute the conversion parameters
+                const double cosRoll = cos(radians.x);
+                const double sinRoll = sin(radians.x);
+
+                const double cosPitch = cos(radians.y);
+                const double sinPitch = sin(radians.y);
+
+                const double cosYaw = cos(radians.z);
+                const double sinYaw = sin(radians.z);
+
+
+                //Construct the Quaternion
+                Quaternion q = {};
+                q.w =   cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
+                q.v.x = sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw;
+                q.v.y = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
+                q.v.z = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
+
+                double n = q.Norm();
+
+                return q;
             }
         };
     }
