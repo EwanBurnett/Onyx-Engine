@@ -8,6 +8,8 @@ Maths {#Maths}
     - X+ is Right, X- is Left
     - Y+ is Up, Y- is Down
 
+![Coordinate System](/img_maths_coordinate_system.png)
+
 ## Euler Angles
 - Roll 
     - Rotation about the Z+ axis
@@ -20,6 +22,7 @@ Maths {#Maths}
 
 ## Vector / Matrix Ordering
 - Row-Major Multiplication Order
+    - e.g. `vec4 * mat4x3`
     - e.g. `world * (view * projection)`
     
 # Utilities
@@ -66,7 +69,7 @@ Onyx provides unit conversion utility methods between Degrees and Radians, via `
     float degrees = 60; 
     float radians = Onyx::Maths::DegToRad(degrees);
     Log::Print("%f degrees = %f radians.\n", degrees, radians);
-    degrees = Maths::RadToDeg(radians); 
+    degrees = Onyx::Maths::RadToDeg(radians); 
     Log::Print("%f radians = %f degrees.\n", radians, degrees); 
 ```
 
@@ -81,21 +84,21 @@ Arithmetic type values can be clamped through `Onyx::Maths::Clamp()`, specifying
     float value = Onyx::Maths::PI; 
     float vMin = 0.0f; 
     float vMax = 1.0f; 
-    float newValue = Maths::Clamp(value, vMin, vMax); 
+    float newValue = Onyx::Maths::Clamp(value, vMin, vMax); 
     printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
 
     //Clamp to the Minimum of the range
     value = -10000.0f; 
     vMin = -30.0f; 
     vMax = 40.0f; 
-    newValue = Maths::Clamp(value, vMin, vMax); 
+    newValue = Onyx::Maths::Clamp(value, vMin, vMax); 
     printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
 
     //Value is within our range, so don't modify it. 
     value = 50.0f; 
     vMin = 0.0f; 
     vMax = 100.0f; 
-    newValue = Maths::Clamp(value, vMin, vMax); 
+    newValue = Onyx::Maths::Clamp(value, vMin, vMax); 
     printf("Value %f Clamped to range [%f, %f] = %f\n", value, vMin, vMax, newValue);
 ```
 
@@ -112,8 +115,6 @@ Arithmetic type values can be clamped through `Onyx::Maths::Clamp()`, specifying
     v = Onyx::Maths::Lerp(a, b, 0.0f);  // v = a = 0.0
     v = Onyx::Maths::Lerp(a, b, 1.0f);  // v = b = 1.0
     v = Onyx::Maths::Lerp(a, b, -50.0f);  // v = (b - a) * t = -50.0
-
-
 ```
 
 ### Fast Inverse Square Root
@@ -127,7 +128,6 @@ Arithmetic type values can be clamped through `Onyx::Maths::Clamp()`, specifying
     float rsqrt_x = 1.0 / Onyx::Maths::RSqrt(x);    //rsqrt_x == ~5
 ```
 
-
 # Vectors
 Mathemetical Vectors with between 2 and 4 components: 
     - `Vector2<T>`
@@ -135,11 +135,42 @@ Mathemetical Vectors with between 2 and 4 components:
     - `Vector4<T>`
 
 ## Standard Operations
+Standard arithmetic operations are supported by each vector type: 
+    - Vector/Scalar Addition (+)
+    - Vector/Scalar Subtraction (-)
+    - Vector/Scalar Multiplication (*)
+    - Vector/Scalar Division (/)
+    - Equality / Inequality (== / !=)
+    
 ### Accessing Vector Elements
-### Arithmetic Operators
+Vector data is stored internally as a Union, and allows for multiple ways to address each element:
+
+```cpp
+    Onyx::Maths::Vector3f vec{0.0f, 1.0f, 2.0f};
+
+    float array_access = vec[0]; // = 0.0f
+    
+    float xyz_access = vec.y; // = 1.0f
+
+    float rgb_access = vec.b; //= 2.0f
+```
+
+See the definition of each Vector Type for their supported accessors. Array access is always supported. 
+
 ## Additional Operations
 ### Vector Set
 ### Dot Product
+The Vector Dot Product is defined as \f$ a \cdot b = \sum_{i=1}^{n}{a_ib_i}\f$, where \f$a\f$ and \f$b\f$ are vectors, \f$n\f$ is the vector's dimension (i.e. 3 for a Vector3), and \f$a_i\f$ and \f$b_i\f$ are components of that vector. The dot product gives the cosine of the angle between two vectors, in Radians. 
+
+```cpp
+    // Computes the angle between two vectors
+    Onyx::Maths::Vector3f a{0.5, -0.3, 1.0};
+    Onyx::Maths::Vector3f b{1.0, 0.8, 0.2};
+
+    double theta = acos(Onyx::Maths::Vector3f::Dot(a, b)); 
+    double angleDegrees = Onyx::Maths::RadToDeg(theta); // = 62.613 degrees (3sf) 
+```
+
 ### Cross Product
 ## Static Methods
 ### Directional Constants
@@ -152,6 +183,21 @@ Mathemetical Vectors with between 2 and 4 components:
 # Matrices
 
 # Quaternions
+## Operators
+### Multiplication
+### Addition
+## Static Methods
+### Identity
+### Conjugate
+### Norm
+### Inverse
+### Linear Interpolation
+### Spherical Linear Interpolation
+## Representation
+### Axis-Angle
+### Matrix
+### Euler Angles
+
 
 
 <div class="section_buttons">

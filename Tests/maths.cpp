@@ -212,23 +212,23 @@ TEST(Maths, Vector2_Subtraction) {
 }
 
 TEST(Maths, Vector2_Multiplication) {
-    const double scale = 300.0; 
+    const double scale = 300.0;
 
-    const Onyx::Maths::Vector2d a(0.5, -0.5); 
-    const Onyx::Maths::Vector2d b(2.0, 0.0); 
+    const Onyx::Maths::Vector2d a(0.5, -0.5);
+    const Onyx::Maths::Vector2d b(2.0, 0.0);
 
-    const auto a_scaled_rhs = a * scale; 
-    const auto a_scaled_lhs = scale * a; 
-    const auto ab = a * b; 
+    const auto a_scaled_rhs = a * scale;
+    const auto a_scaled_lhs = scale * a;
+    const auto ab = a * b;
 
     EXPECT_DOUBLE_EQ(a_scaled_lhs.x, a.x * scale);
     EXPECT_DOUBLE_EQ(a_scaled_lhs.y, a.y * scale);
 
-    EXPECT_DOUBLE_EQ(a_scaled_rhs.x, a_scaled_lhs.x); 
-    EXPECT_DOUBLE_EQ(a_scaled_rhs.y, a_scaled_lhs.y); 
+    EXPECT_DOUBLE_EQ(a_scaled_rhs.x, a_scaled_lhs.x);
+    EXPECT_DOUBLE_EQ(a_scaled_rhs.y, a_scaled_lhs.y);
 
-    EXPECT_DOUBLE_EQ(ab.x, a.x * b.x); 
-    EXPECT_DOUBLE_EQ(ab.y, a.y * b.y); 
+    EXPECT_DOUBLE_EQ(ab.x, a.x * b.x);
+    EXPECT_DOUBLE_EQ(ab.y, a.y * b.y);
 }
 
 TEST(Maths, Vector2_Division) {}
@@ -260,7 +260,15 @@ TEST(Maths, Vector3_Scalar_Multiplication) {}
 TEST(Maths, Vector3_Scalar_Division) {}
 TEST(Maths, Vector3_Equality) {}
 TEST(Maths, Vector3_Inequality) {}
-TEST(Maths, Vector3_Dot) {}
+TEST(Maths, Vector3_Dot) {
+    Onyx::Maths::Vector3f a{0.5, -0.3, 1.0};
+    Onyx::Maths::Vector3f b{1.0, 0.8, 0.2};
+
+    double theta = acos(Onyx::Maths::Vector3f::Dot(a, b));
+    double angleDegrees = Onyx::Maths::RadToDeg(theta);
+
+    EXPECT_DOUBLE_EQ(angleDegrees, 62.612893881970322);
+}
 TEST(Maths, Vector3_Length) {}
 TEST(Maths, Vector3_Length_Squared) {}
 TEST(Maths, Vector3_Normalize) {}
@@ -327,25 +335,25 @@ TEST(Maths, Quaternion_Inverse) {};
 TEST(Maths, Quaternion_Comparison) {};
 
 TEST(Maths, Quaternion_FromAxisAngle) {
-    double theta = Onyx::Maths::DegToRad(30.0); 
+    double theta = Onyx::Maths::DegToRad(30.0);
 
     Onyx::Maths::Quaternion qx = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 0.0, 0.0 }, theta);
     Onyx::Maths::Quaternion qy = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, theta);
     Onyx::Maths::Quaternion qz = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 0.0, 1.0 }, theta);
 
-    EXPECT_NEAR(qx.w, 0.9659, 0.0001); 
-    EXPECT_NEAR(qx.v.x, 0.2588, 0.0001); 
+    EXPECT_NEAR(qx.w, 0.9659, 0.0001);
+    EXPECT_NEAR(qx.v.x, 0.2588, 0.0001);
 
-    EXPECT_NEAR(qy.w, 0.9659, 0.0001); 
-    EXPECT_NEAR(qy.v.y, 0.2588, 0.0001); 
+    EXPECT_NEAR(qy.w, 0.9659, 0.0001);
+    EXPECT_NEAR(qy.v.y, 0.2588, 0.0001);
 
-    EXPECT_NEAR(qz.w, 0.9659, 0.0001); 
-    EXPECT_NEAR(qz.v.z, 0.2588, 0.0001); 
+    EXPECT_NEAR(qz.w, 0.9659, 0.0001);
+    EXPECT_NEAR(qz.v.z, 0.2588, 0.0001);
 
 };
 
 TEST(Maths, Quaternion_ToAxisAngle) {
-    double theta = Onyx::Maths::DegToRad(30.0); 
+    double theta = Onyx::Maths::DegToRad(30.0);
 
     Onyx::Maths::Quaternion qx = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 0.0, 0.0 }, theta);
 
@@ -372,7 +380,26 @@ TEST(Maths, Quaternion_ToAxisAngle) {
 
 };
 
-TEST(Maths, Quaternion_FromMatrix4x4) {};
+TEST(Maths, Quaternion_FromMatrix4x4) {
+    double theta = Onyx::Maths::DegToRad(30.0);
+
+    const auto rx = Onyx::Maths::Matrix4x4<double>::XRotation(theta);
+    const auto ry = Onyx::Maths::Matrix4x4<double>::YRotation(theta);
+    const auto rz = Onyx::Maths::Matrix4x4<double>::ZRotation(theta);
+
+    Onyx::Maths::Quaternion qx = Onyx::Maths::Quaternion::FromMatrix4x4(rx);
+    Onyx::Maths::Quaternion qy = Onyx::Maths::Quaternion::FromMatrix4x4(ry);
+    Onyx::Maths::Quaternion qz = Onyx::Maths::Quaternion::FromMatrix4x4(rz);
+
+    auto ax = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 0.0 ,0.0 }, theta);
+    auto ay = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0 ,0.0 }, theta);
+    auto az = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 0.0 ,1.0 }, theta);
+
+    EXPECT_TRUE(qx == ax);
+    EXPECT_TRUE(qy == ay);
+    EXPECT_TRUE(qz == az);
+
+};
 
 TEST(Maths, Quaternion_ToMatrix4x4) {
 
@@ -407,13 +434,13 @@ TEST(Maths, Quaternion_FromEulerAngles) {
     auto my = Onyx::Maths::Matrix4x4<double>::YRotationFromDegrees(axis.y);
     auto mz = Onyx::Maths::Matrix4x4<double>::ZRotationFromDegrees(axis.z);
 
-    auto rot = mx * (my * mz); 
+    auto rot = mx * (my * mz);
 
     //Rotate a point by both the quaternion and manual rotation matrix
     Onyx::Maths::Vector4d point{3.0, 400.0, -1.0, 1.0};
 
-    auto p0 = point * q; 
-    auto p1 = point * rot; 
+    auto p0 = point * q;
+    auto p1 = point * rot;
 
     EXPECT_NEAR(p0.x, p1.x, 0.0001);
     EXPECT_NEAR(p0.y, p1.y, 0.0001);
@@ -421,19 +448,35 @@ TEST(Maths, Quaternion_FromEulerAngles) {
 };
 
 TEST(Maths, Quaternion_ToEulerAngles) {
-    double theta = Onyx::Maths::DegToRad(30.0); 
+    double theta = Onyx::Maths::DegToRad(30.0);
 
     Onyx::Maths::Quaternion qx = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 0.0, 0.0 }, theta);
-    auto ax = qx.ToEulerAngles<double>(); 
-    EXPECT_NEAR(ax.x, theta, 0.001); 
+    auto ax = qx.ToEulerAngles<double>();
+    EXPECT_NEAR(ax.x, theta, 0.001);
 
     Onyx::Maths::Quaternion qy = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, theta);
-    auto ay = qy.ToEulerAngles<double>(); 
-    EXPECT_NEAR(ay.y, theta, 0.001); 
+    auto ay = qy.ToEulerAngles<double>();
+    EXPECT_NEAR(ay.y, theta, 0.001);
 
     Onyx::Maths::Quaternion qz = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 0.0, 1.0 }, theta);
-    auto az = qz.ToEulerAngles<double>(); 
-    EXPECT_NEAR(az.z, theta, 0.001); 
+    auto az = qz.ToEulerAngles<double>();
+    EXPECT_NEAR(az.z, theta, 0.001);
 };
-TEST(Maths, Quaternion_RotateVectorAxis) {};
-TEST(Maths, Quaternion_Slerp) {};
+
+TEST(Maths, Quaternion_Lerp) {
+
+    Onyx::Maths::Quaternion q0 = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, 0.0);
+    Onyx::Maths::Quaternion q1 = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, -1.0, 0.0 }, 0.0);
+
+    auto q_lerp = Onyx::Maths::Quaternion::Lerp(q0, q1, 0.5);
+
+
+};
+TEST(Maths, Quaternion_Slerp) {
+    Onyx::Maths::Quaternion q0 = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 0.0, 1.0, 0.0 }, 10.0);
+    Onyx::Maths::Quaternion q1 = Onyx::Maths::Quaternion::FromAxisAngle<double>({ 1.0, 1.0, 0.0 }, 0.0);
+
+    auto q_slerp = Onyx::Maths::Quaternion::Slerp(q0, q1, 0.5);
+
+
+};

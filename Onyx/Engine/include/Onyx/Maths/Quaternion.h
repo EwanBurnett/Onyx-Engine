@@ -59,7 +59,7 @@ namespace Onyx {
 
             template<typename T>
             inline friend Vector4<T> operator * (const Quaternion& lhs, const Vector4<T>& rhs) {
-                Quaternion p(0.0, Vector3<T>{ rhs.x, rhs.y, rhx.z });  //Load the Vector into a Quaternion
+                Quaternion p(0.0, Vector3<T>{ rhs.x, rhs.y, rhs.z });  //Load the Vector into a Quaternion
 
                 return (lhs * p * lhs.Conjugate()).v;    //As a rotation quaternion, the conjugate is the inverse. 
             }
@@ -68,13 +68,13 @@ namespace Onyx {
             template<typename T, typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true>
             inline friend Quaternion operator *(const Quaternion& lhs, const T& rhs) {
 
-                return { Quaternion(rhs, {0.0, 0.0, 0.0}) * lhs };
+                return { Quaternion(rhs, Vector3<T>{0.0, 0.0, 0.0})* lhs };
             }
 
 
             template<typename T, typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true>
             inline friend Quaternion operator *(const T& lhs, const Quaternion& rhs) {
-                return { Quaternion(lhs, Vector3{0.0, 0.0, 0.0}) * rhs };
+                return { Quaternion(lhs, Vector3<T>{0.0, 0.0, 0.0})* rhs };
             }
 
 
@@ -148,6 +148,7 @@ namespace Onyx {
             bool operator == (Quaternion rhs) { return w == rhs.w && v == rhs.v; };
             bool operator != (Quaternion rhs) { return !(*this == rhs); };
 
+          
             template<typename T>
             inline static Vector3<T> RotateVector(const Vector3<T> vector, const Vector3<T> axis, const double radians) {
                 const double r = radians / 2.0;
@@ -165,9 +166,9 @@ namespace Onyx {
 
                 //In the case of the Quaternion Identity, 
                 if (q.w == 1.0) {
-                    return { 1.0, 0.0, 0.0, 0.0 }; 
+                    return { 1.0, 0.0, 0.0, 0.0 };
                 }
-                
+
                 //Extract the rotation angle from w
                 double theta = 2.0 * (acos(q.w));
 
@@ -177,13 +178,13 @@ namespace Onyx {
                 }
 
                 else {
-                    return { 0.0, 0.0, 0.0, 0.0 }; 
+                    return { 0.0, 0.0, 0.0, 0.0 };
                 }
             }
 
-            template<typename T> 
+            template<typename T>
             inline Vector4<T> ToAxisAngle() {
-                return Quaternion::ToAxisAngle<T>(*this); 
+                return Quaternion::ToAxisAngle<T>(*this);
             }
 
             template<typename T>
@@ -192,6 +193,22 @@ namespace Onyx {
                 const double sinTheta = sin(r);
                 const double cosTheta = cos(r);
                 return { cosTheta, (Vector3<T>::Normalize(axis) * sinTheta) };
+            }
+
+            /**
+             * @brief Performs Linear Interpolation between two quaternions
+             * @param a
+             * @param b
+             * @param t
+             * @return
+            */
+            inline static Quaternion Lerp(const Quaternion& a, const Quaternion& b, const double t) {
+                Quaternion q = {};
+
+                q = ((1.0 - t) * a) + b;
+                q = q * (1.0 / q.Norm());
+
+                return q;
             }
 
             /**
@@ -204,10 +221,6 @@ namespace Onyx {
             inline static Quaternion Slerp(const Quaternion& a, const Quaternion& b, const double t) {
                 double phi = acos((a.v.x * b.v.x) + (a.v.y * b.v.y) + (a.v.z * b.v.z) * (a.w * b.w));
                 return ((sin(phi * (1.0 - t)) / sin(phi)) * a) + ((sin(phi * t) / sin(phi)) * b);
-            }
-
-            inline static Quaternion RotateTowards(const Quaternion& a, const Quaternion& b) {
-                return {}; //TODO: 
             }
 
             static Quaternion FromMatrix4x4(const Matrix4x4<double>& mat);
@@ -266,7 +279,7 @@ namespace Onyx {
 
                 //Construct the Quaternion
                 Quaternion q = {};
-                q.w =   cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
+                q.w = cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
                 q.v.x = sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw;
                 q.v.y = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
                 q.v.z = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;

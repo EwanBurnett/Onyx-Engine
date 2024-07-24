@@ -22,49 +22,50 @@ Quaternion Quaternion::FromMatrix4x4(const Matrix4x4<double>& mat) {
         out.w = 0.0;
     }
     if (out.v.x < 0.0) {
-        out.v.x = 0.0; 
+        out.v.x = 0.0;
     }
     if (out.v.y < 0.0) {
-        out.v.y = 0.0; 
+        out.v.y = 0.0;
     }
     if (out.v.z < 0.0) {
-        out.v.z = 0.0; 
+        out.v.z = 0.0;
     }
 
     out.w = sqrt(out.w);
-    out.v.x = sqrt(out.v.x); 
-    out.v.y = sqrt(out.v.y); 
-    out.v.z = sqrt(out.v.z); 
-    
+    out.v.x = sqrt(out.v.x);
+    out.v.y = sqrt(out.v.y);
+    out.v.z = sqrt(out.v.z);
+
 
 
     //Resolve the signs
     if (out.w >= out.v.x && out.w >= out.v.y && out.w >= out.v.z) {    //w is the largest
-        out.v.x = (mat[9] - mat[6]) / 4.0 * out.w;
-        out.v.y = (mat[2] - mat[8]) / 4.0 * out.w;
-        out.v.z = (mat[4] - mat[2]) / 4.0 * out.w;
+        out.v.x = (mat[9] - mat[6]) / (4.0 * out.w);
+        out.v.y = (mat[2] - mat[8]) / (4.0 * out.w);
+        out.v.z = (mat[4] - mat[1]) / (4.0 * out.w);
     }
     else if (out.v.x >= out.w && out.v.x >= out.v.y && out.v.z >= out.v.z) {    //x is the largest
-        out.w = (mat[9] - mat[6]) / 4.0 * out.v.x;
-        out.v.y = (mat[2] - mat[8]) / 4.0 * out.v.x;
-        out.v.z = (mat[4] - mat[2]) / 4.0 * out.v.x;
+        out.w = (mat[9] - mat[6]) / (4.0 * out.v.x);
+        out.v.y = (mat[1] + mat[4]) / (4.0 * out.v.x);
+        out.v.z = (mat[2] + mat[8]) / (4.0 * out.v.x);
     }
     else if (out.v.y >= out.w && out.v.y >= out.v.x && out.v.z >= out.v.z) {    //x is the largest
-        out.w = (mat[9] - mat[6]) / 4.0 * out.v.y;
-        out.v.x = (mat[2] - mat[8]) / 4.0 * out.v.y;
-        out.v.z = (mat[4] - mat[2]) / 4.0 * out.v.y;
+        out.w = (mat[2] - mat[8]) / (4.0 * out.v.y);
+        out.v.x = (mat[1] + mat[4]) / (4.0 * out.v.y);
+        out.v.z = (mat[6] + mat[9]) / (4.0 * out.v.y);
     }
     else if (out.v.z >= out.w && out.v.z >= out.v.y && out.v.z >= out.v.x) {    //x is the largest
-        out.w = (mat[9] - mat[6]) / 4.0 * out.v.z;
-        out.v.x = (mat[2] - mat[8]) / 4.0 * out.v.z;
-        out.v.y = (mat[4] - mat[2]) / 4.0 * out.v.z;
+        out.w = (mat[4] - mat[1]) / (4.0 * out.v.z);
+        out.v.x = (mat[2] + mat[8]) / (4.0 * out.v.z);
+        out.v.y = (mat[6] + mat[9]) / (4.0 * out.v.z);
     }
     else {
         //This shouldn't be possible!
         Log::Fatal(__FILE__, __LINE__, __PRETTY_FUNCTION__, "Impossible Quaternion-Matrix conversion!\n");
     }
 
-    return out;
+
+    return out.Conjugate();
 }
 
 Matrix4x4<double> Quaternion::ToMatrix4x4() {
