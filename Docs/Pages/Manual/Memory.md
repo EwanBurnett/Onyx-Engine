@@ -1,11 +1,12 @@
-Timing {#Timing}
+Memory {#Memory}
 ===
+
+
 
 <div class="section_buttons">
  
 | Previous          |                              Next |
 |:------------------|----------------------------------:|
-| [Random Number Generation](RNG.md) | [Memory](Memory.md) |
+| [Timing](Timing.md) |  |
  
 </div>
-

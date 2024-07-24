@@ -8,10 +8,10 @@
 #include <cstdio>
 
 namespace Onyx{
-    const int ONYX_GIT_HASH = 0xfb2bba0;
+    const int ONYX_GIT_HASH = 0x1488a41;
     const int ONYX_VERSION_MAJOR = 0;
     const int ONYX_VERSION_MINOR = 0;
-    const int ONYX_VERSION_ISSUE = 3;
+    const int ONYX_VERSION_ISSUE = 4;
 }
 
 std::string Onyx::GetVersionString(){

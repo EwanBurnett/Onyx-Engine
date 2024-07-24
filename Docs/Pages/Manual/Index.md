@@ -7,6 +7,7 @@ Manual {#Index}
 - @subpage Maths
 - @subpage RNG
 - @subpage Timing
+- @subpage Memory
 
 <div class="section_buttons">
  

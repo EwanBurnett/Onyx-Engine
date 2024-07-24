@@ -5,7 +5,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/Core/Version.cpp.in" "${CMAKE_CU
 
 find_package(Threads REQUIRED)
 
-add_library(${PROJECT_NAME} STATIC "src/Onyx.cpp" "src/Core/Version.cpp" "include/Onyx/Core/Logger.h" "src/Core/Logger.cpp" "include/Onyx/Core/Utility.h" "src/Core/Utility.cpp" "include/Onyx/Core/CVar.h" "src/Core/CVar.cpp" "include/Onyx/Core/Random.h" "src/Core/Random.cpp" "include/Onyx/Core/Timer.h" "src/Core/Timer.cpp" "include/Onyx/Maths/Quaternion.h" "src/Maths/Quaternion.cpp")
+add_library(${PROJECT_NAME} STATIC "src/Onyx.cpp" "src/Core/Version.cpp" "include/Onyx/Core/Logger.h" "src/Core/Logger.cpp" "include/Onyx/Core/Utility.h" "src/Core/Utility.cpp" "include/Onyx/Core/CVar.h" "src/Core/CVar.cpp" "include/Onyx/Core/Random.h" "src/Core/Random.cpp" "include/Onyx/Core/Timer.h" "src/Core/Timer.cpp" "include/Onyx/Maths/Quaternion.h" "src/Maths/Quaternion.cpp" "include/Onyx/Memory/StackAllocator.h" "src/Memory/StackAllocator.cpp" "include/Onyx/Memory/Memory.h")
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 
 set(ONYX_ENGINE_COMPILE_DEFINITIONS )

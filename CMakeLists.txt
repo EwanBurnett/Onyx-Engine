@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project("Onyx" VERSION 0.0.3)
+project("Onyx" VERSION 0.0.4)
 
 # Options
 option(ONYX_BUILD_TESTS "Build the Unit Test project" OFF)
