@@ -12,26 +12,44 @@ namespace Onyx {
             /**
              * @brief 
              * @param pData 
-             * @param capacity 
+             * @param capacityBytes 
              * @param alignment 
             */
-            explicit StackAllocator(void* pData, const uint64_t capacity, const uint64_t alignment = DEFAULT_ALIGNMENT);
+            explicit StackAllocator(void* pData, const uint64_t capacityBytes, const uint64_t alignment = DEFAULT_ALIGNMENT);
 
             /**
              * @brief 
-             * @param capacity 
+             * @param capacityBytes 
              * @param alignment 
             */
-            explicit StackAllocator(const uint64_t capacity, const uint64_t alignment = DEFAULT_ALIGNMENT);
+            explicit StackAllocator(const uint64_t capacityBytes, const uint64_t alignment = DEFAULT_ALIGNMENT);
             ~StackAllocator();
 
             /**
              * @brief 
-             * @param size 
+             * @param bytes 
              * @param alignment 
              * @return 
             */
-            void* Alloc(const uint64_t size, const uint64_t alignment = DEFAULT_ALIGNMENT);
+            void* Alloc(const uint64_t bytes, const uint64_t alignment = DEFAULT_ALIGNMENT);
+
+            /**
+             * @brief 
+             * @tparam T 
+             * @tparam ...Params 
+             * @param count 
+             * @param alignment 
+             * @param ...params 
+             * @return 
+            */
+            template<typename T, typename ... Params> 
+            inline T* Alloc(const uint64_t count, const uint64_t alignment = DEFAULT_ALIGNMENT, Params... params) {
+                T* pData = reinterpret_cast<T*>(Alloc(sizeof(T) * count, alignment)); 
+                for (uint64_t i = 0; i < count; i++) {
+                    new (pData + i) T(params...);
+                }
+                return pData; 
+            }
 
             /**
              * @brief 
@@ -63,10 +81,10 @@ namespace Onyx {
             void Clear();
 
         private:
-            uint64_t m_Alignment;
             void* m_pData;
             Marker m_Top;
             uint64_t m_Capacity;
+            bool m_bInPlace; 
         };
     }
 }

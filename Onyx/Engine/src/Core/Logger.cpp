@@ -90,10 +90,6 @@ void Onyx::Log::Error(const char* file, int line, const char* function, const ch
     va_start(args, fmt);
     _Output(ELogColour::LIGHTRED, stderr, "Error\nFILE: %s\n\tLINE: %d\n\tFUNCTION: %s\n", file, line, function);
     _Output(ELogColour::LIGHTRED, stderr, fmt, args);
-    if (m_Stream != stdout) {
-        _Output(ELogColour::LIGHTRED, m_Stream, "Error\nFILE: %s\n\tLINE: %d\n\tFUNCTION: %s\n", file, line, function);
-        _Output(ELogColour::LIGHTRED, m_Stream, fmt, args);
-    }
     va_end(args);
 }
 
@@ -107,13 +103,8 @@ void Onyx::Log::Fatal(const char* file, int line, const char* function, const ch
 {
     va_list args;
     va_start(args, fmt);
-    _Output(ELogColour::RED, stderr, "FATAL ERROR\nFILE: %s\n\tLINE: %d\n\tFUNCTION: %s\n", file, line, function);
+    _Output(ELogColour::RED, stderr, "\nFATAL ERROR\nFILE: %s\n\tLINE: %d\n\tFUNCTION: %s\n", file, line, function);
     _Output(ELogColour::RED, stderr, fmt, args);
-    if (m_Stream != stdout) {
-        _Output(ELogColour::RED, m_Stream, "FATAL ERROR\nFILE: %s\n\tLINE: %d\n\tFUNCTION: %s\n", file, line, function);
-        _Output(ELogColour::RED, m_Stream, fmt, args);
-    }
-
     va_end(args);
 
     DebugBreak();

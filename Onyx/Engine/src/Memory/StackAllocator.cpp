@@ -2,55 +2,64 @@
 #include <assert.h>
 #include <cstring> 
 #include <new>
+#include "Onyx/Core/Logger.h"
 
 Onyx::Memory::StackAllocator::StackAllocator(void* pData, const uint64_t capacity, const uint64_t alignment)
 {
-    m_pData = pData; 
-    m_Capacity = capacity; 
-    m_Alignment = alignment; 
-    m_Top = 0; 
+    m_pData = pData;
+    m_Capacity = capacity;
+    m_Top = 0;
+    m_bInPlace = true;   //The allocator was supplied with external memory; We don't want to free it from the allocator. 
+
+#if ONYX_DEBUG
+    memset((char*)m_pData, 0xde, m_Capacity);
+#endif
 }
 
-Onyx::Memory::StackAllocator::StackAllocator(const uint64_t size,  const uint64_t alignment)
+Onyx::Memory::StackAllocator::StackAllocator(const uint64_t size, const uint64_t alignment)
 {
-    m_Alignment = alignment; 
-    m_pData = new char[size]; //Allocate data for the stack
-    m_Top = 0; 
-    m_Capacity = size; 
+    m_pData = AllocAligned(size, alignment); //Allocate data for the stack
+    m_Top = 0;
+    m_Capacity = size;
+    m_bInPlace = false;
 #if ONYX_DEBUG
-    memset((char*)m_pData, 0xde, m_Capacity); 
+    memset((char*)m_pData, 0xde, m_Capacity);
 #endif
 }
 
 Onyx::Memory::StackAllocator::~StackAllocator()
 {
-    delete[] m_pData; 
-    //delete[] m_pData, std::align_val_t{m_Alignment}; 
+    if (!m_bInPlace) {
+        FreeAligned(m_pData); 
+    }
 }
 
 void* Onyx::Memory::StackAllocator::Alloc(const uint64_t size, const uint64_t alignment)
 {
-    assert(size <= m_Capacity - m_Top);
-    //uint64_t allocSize = size + (alignment - 1); 
-    void* pData = (char*)m_pData + m_Top;
-    //void* pDataAligned = (void*)AlignAddress((uintptr_t)pData, alignment);
-    //allocSize = (char*)pDataAligned - (char*)pData; 
+    if (!(size <= m_Capacity - m_Top)) {
+        Onyx::Log::Fatal(__FILE__, __LINE__, __PRETTY_FUNCTION__, "Bad Alloc!\n%d(+ %d) bytes requested, but Available Memory was %d bytes!\n", size, alignment - 1, (m_Capacity - m_Top));
+    }
 
-    m_Top += size;// +allocSize;
+    char* pData = (char*)m_pData + m_Top;
+
+    char* pAlloc = pData;
+    m_Top += size + (alignment - 1);
+    pAlloc = AlignPointer<char>(pData, alignment);
 
 #if ONYX_DEBUG
-    memset(pData, 0x00, size);
+    memset(pData, 0xFF, pAlloc - pData);
+    memset(pAlloc, 0x00, size);
 #endif
-    return pData; 
+    return pAlloc;
 }
 
 void Onyx::Memory::StackAllocator::FreeToMarker(const Marker marker)
 {
-    assert(marker <= m_Top); 
+    assert(marker <= m_Top);
     m_Top = marker;
 
 #if ONYX_DEBUG
-    memset((char*)m_pData + m_Top, 0xcc, marker - m_Top);; 
+    memset((char*)m_pData + m_Top, 0xcc, marker - m_Top);;
 #endif
 }
 
@@ -71,5 +80,5 @@ uint64_t Onyx::Memory::StackAllocator::BytesAllocated() const
 
 void Onyx::Memory::StackAllocator::Clear()
 {
-    FreeToMarker(0x00); 
+    FreeToMarker(0x00);
 }

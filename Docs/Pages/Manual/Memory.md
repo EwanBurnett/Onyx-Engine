@@ -1,7 +1,8 @@
 Memory {#Memory}
 ===
 
-
+# Allocators
+## Stack Allocator
 
 <div class="section_buttons">
  
