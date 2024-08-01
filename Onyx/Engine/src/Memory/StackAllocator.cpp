@@ -27,6 +27,14 @@ Onyx::Memory::StackAllocator::StackAllocator(const uint64_t size, const uint64_t
 #endif
 }
 
+
+Onyx::Memory::StackAllocator::StackAllocator(StackAllocator&& other) noexcept{
+    this->m_bInPlace = other.m_bInPlace; 
+    this->m_pData = other.m_pData; 
+    this->m_Capacity = other.m_Capacity; 
+    this->m_Top = other.m_Top; 
+}
+
 Onyx::Memory::StackAllocator::~StackAllocator()
 {
     if (!m_bInPlace) {
@@ -52,6 +60,7 @@ void* Onyx::Memory::StackAllocator::Alloc(const uint64_t size, const uint64_t al
 #endif
     return pAlloc;
 }
+
 
 void Onyx::Memory::StackAllocator::FreeToMarker(const Marker marker)
 {

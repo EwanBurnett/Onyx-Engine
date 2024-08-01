@@ -4,6 +4,7 @@
 #include <Onyx/Maths/Maths.h>
 #include <Onyx/Memory/Memory.h>
 #include <Onyx/Memory/StackAllocator.h>
+#include <Onyx/Memory/PoolAllocator.h>
 #include <cstring>
 #include <cstdio>
 
@@ -17,7 +18,7 @@ using namespace Onyx;
 
 int main() {
     Onyx::Init();
- 
+
     Onyx::Log::Status("[%s]\tOnyx Version: %s\n", platformName, Onyx::GetVersionString().c_str());
 
 #if ONYX_DEBUG
@@ -27,31 +28,40 @@ int main() {
     Onyx::Log::SetOutputStream(logFile);
 
     Onyx::Memory::StackAllocator stack(Onyx::Memory::MEGABYTES(512), 32);
-    Onyx::Memory::StackAllocator::Marker marker = stack.Top(); 
-    stack.Alloc(32); 
+    Onyx::Memory::StackAllocator::Marker marker = stack.Top();
 
-    //void* pMem = stack.Alloc(Onyx::Memory::MEGABYTES(0xa), 64); 
-    //Onyx::Memory::StackAllocator subStack(pMem, Onyx::Memory::MEGABYTES(0xa)); 
-    //void* pMem3 = subStack.Alloc(Onyx::Memory::KILOBYTES(20)); 
-    //memset(pMem3, 0xaa, Onyx::Memory::KILOBYTES(10)); 
-    //void* pMem2 = stack.Alloc(Onyx::Memory::BYTES(12), 64); 
+    Onyx::Memory::PoolAllocator pool(64, 10000); 
+    for (int i = 0; i < 10000; i++) {
+        void* pd = pool.Alloc();
+        *(Onyx::Maths::Matrix4x4<float>*)pd = {};
+
+        printf("\rPool %d chunks Allocated out of %u (%f / 1.0)!", pool.NumAllocated(), pool.Size(), (float)pool.NumAllocated() / (float)pool.Size());
+
+        if (i % 2) {
+            pool.Free(pd);
+        }
+    }
+    for (uint64_t i = 0; i < 1000000; i++) {
+
+        printf("\rStack %d bytes Allocated out of %u bytes (%f / 1.0)!", stack.BytesAllocated(), stack.Capacity(), (float)stack.BytesAllocated() / (float)stack.Capacity());
+        void* pMatrices = stack.Alloc(sizeof(Onyx::Maths::Matrix4x4<float>) * 1000, Onyx::Memory::DEFAULT_ALIGNMENT); // This should allocate 64000 bytes from the stack. (plus alignment requirements)
+        for (int j = 0; j < 1000; j++) {
+            static_cast<Onyx::Maths::Matrix4x4<float>*>(pMatrices)[j] = {};
+        }
+
+        int a = 1;
 
 
-    for (uint64_t i = 0; i < 100; i++) {
+        //Explicit delete()
+        for (int j = 0; j < 1000; j++) {
+            //pMat[j].~Onyx::Maths::Matrix4x4<float>();
+        }
+    }
 
-        printf("\rStack %d bytes Allocated out of %u bytes (%f / 1.0)!", stack.BytesAllocated(), stack.Capacity(), (float)stack.BytesAllocated() / (float)stack.Capacity()); 
-        //auto* pQuat = stack.Alloc<Onyx::Maths::Quaternion, double, Onyx::Maths::Vector3f>(64, 0, 1.0, Onyx::Maths::Vector3f{ 2.0f, 3.0f, 4.0f });
-        auto* pMat = stack.Alloc<Onyx::Maths::Matrix4x4<float>>(10000, Onyx::Memory::DEFAULT_ALIGNMENT);
-        
+    stack.Clear();
 
-        //printf("SubStack %d bytes Alocated out of %d bytes (%f / 1.0)!\n", subStack.BytesAllocated(), subStack.Capacity(), (float)subStack.BytesAllocated() / (float)subStack.Capacity()); 
-        int a = 0; 
-   }
-
-    stack.Clear(); 
-
-    Onyx::Log::SetOutputStream(stdout); 
-    fclose(logFile); 
+    Onyx::Log::SetOutputStream(stdout);
+    fclose(logFile);
 
     return 0;
 }
