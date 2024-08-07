@@ -3,6 +3,8 @@
 #include <cstring> 
 #include <new>
 #include "Onyx/Core/Logger.h"
+#include "Onyx/Platform/Platform.h"
+#include "Onyx/Core/Defaults.h"
 
 Onyx::Memory::StackAllocator::StackAllocator(void* pData, const uint64_t capacity, const uint64_t alignment)
 {
@@ -12,7 +14,8 @@ Onyx::Memory::StackAllocator::StackAllocator(void* pData, const uint64_t capacit
     m_bInPlace = true;   //The allocator was supplied with external memory; We don't want to free it from the allocator. 
 
 #if ONYX_DEBUG
-    memset((char*)m_pData, 0xde, m_Capacity);
+    Platform::SetMemory(m_pData, Defaults::InvalidMemoryValue, m_Capacity);
+    //memset((char*)m_pData, 0xde, m_Capacity);
 #endif
 }
 
@@ -23,7 +26,8 @@ Onyx::Memory::StackAllocator::StackAllocator(const uint64_t size, const uint64_t
     m_Capacity = size;
     m_bInPlace = false;
 #if ONYX_DEBUG
-    memset((char*)m_pData, 0xde, m_Capacity);
+    Platform::SetMemory(m_pData, Defaults::InvalidMemoryValue, m_Capacity);
+    //memset((char*)m_pData, 0xde, m_Capacity);
 #endif
 }
 
@@ -55,8 +59,10 @@ void* Onyx::Memory::StackAllocator::Alloc(const uint64_t size, const uint64_t al
     pAlloc = AlignPointer<char>(pData, alignment);
 
 #if ONYX_DEBUG
-    memset(pData, 0xFF, pAlloc - pData);
-    memset(pAlloc, 0x00, size);
+    Platform::SetMemory(pData, Defaults::AllocatedMemoryValue, pAlloc - pData);
+    Platform::ZeroMemory(pAlloc, size);
+    //memset(pData, 0xFF, pAlloc - pData);
+    //memset(pAlloc, 0x00, size);
 #endif
     return pAlloc;
 }
@@ -68,7 +74,8 @@ void Onyx::Memory::StackAllocator::FreeToMarker(const Marker marker)
     m_Top = marker;
 
 #if ONYX_DEBUG
-    memset((char*)m_pData + m_Top, 0xcc, marker - m_Top);;
+    Platform::SetMemory((char*)m_pData + m_Top, Defaults::FreedMemoryValue, marker - m_Top);
+    //memset((char*)m_pData + m_Top, 0xcc, marker - m_Top);;
 #endif
 }
 

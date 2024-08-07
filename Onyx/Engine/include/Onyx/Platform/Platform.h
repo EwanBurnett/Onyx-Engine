@@ -23,9 +23,9 @@ namespace Onyx {
         void Init();    
         void Shutdown(); 
 
-        void* ZeroMemory(); 
-        void* CopyMemory();
-        void* SetMemory(); 
+        void* ZeroMemory(void* pMem, uint64_t size); 
+        void* CopyMemory(void* pDst, void* pSrc, uint64_t size);
+        void* SetMemory(void* pMem, uint8_t value, uint64_t size); 
 
         WindowHandle CreateWindow(); 
         void DestroyWindow(Onyx::Platform::WindowHandle& window); 

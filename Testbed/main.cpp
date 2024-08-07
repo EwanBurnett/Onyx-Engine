@@ -9,16 +9,11 @@
 #include <cstdio>
 #include <Onyx/Platform/Platform.h>
 
-#if ONYX_PLATFORM_WINDOWS
-const char* platformName = "Windows";
-#elif ONYX_PLATFORM_LINUX
-const char* platformName = "Linux";
-#endif
-
 using namespace Onyx;
 
 int main() {
     Onyx::Init();
+
     Onyx::Platform::Init(); 
     Onyx::Platform::WindowHandle hwnd = Onyx::Platform::CreateWindow(); 
 
@@ -29,7 +24,7 @@ int main() {
 
     Onyx::Platform::DestroyWindow(hwnd); 
 
-    Onyx::Log::Status("[%s]\tOnyx Version: %s\n", platformName, Onyx::GetVersionString().c_str());
+    printf("\n");
 
 #if ONYX_DEBUG
     Onyx::CVarManager::Get()->SetCVar_Bool("Engine.Log.EnableForwarding", true);
