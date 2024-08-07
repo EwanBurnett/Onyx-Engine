@@ -7,6 +7,7 @@
 #include <Onyx/Memory/PoolAllocator.h>
 #include <cstring>
 #include <cstdio>
+#include <Onyx/Platform/Platform.h>
 
 #if ONYX_PLATFORM_WINDOWS
 const char* platformName = "Windows";
@@ -18,6 +19,15 @@ using namespace Onyx;
 
 int main() {
     Onyx::Init();
+    Onyx::Platform::Init(); 
+    Onyx::Platform::WindowHandle hwnd = Onyx::Platform::CreateWindow(); 
+
+    while (Onyx::Platform::PollEvents(hwnd)) {
+        static int a = 0; 
+        printf("\r%d", a++);
+    }
+
+    Onyx::Platform::DestroyWindow(hwnd); 
 
     Onyx::Log::Status("[%s]\tOnyx Version: %s\n", platformName, Onyx::GetVersionString().c_str());
 
@@ -30,7 +40,9 @@ int main() {
     Onyx::Memory::StackAllocator stack(Onyx::Memory::MEGABYTES(512), 32);
     Onyx::Memory::StackAllocator::Marker marker = stack.Top();
 
-    Onyx::Memory::PoolAllocator pool(64, 10000); 
+    void* pPoolMem = stack.Alloc(64 * 10000);
+    Onyx::Memory::PoolAllocator pool(pPoolMem, 64, 10000); 
+
     for (int i = 0; i < 10000; i++) {
         void* pd = pool.Alloc();
         *(Onyx::Maths::Matrix4x4<float>*)pd = {};
@@ -41,10 +53,13 @@ int main() {
             pool.Free(pd);
         }
     }
-    for (uint64_t i = 0; i < 1000000; i++) {
+
+    printf("\n");
+
+    for (uint64_t i = 0; i < 1000; i++) {
 
         printf("\rStack %d bytes Allocated out of %u bytes (%f / 1.0)!", stack.BytesAllocated(), stack.Capacity(), (float)stack.BytesAllocated() / (float)stack.Capacity());
-        void* pMatrices = stack.Alloc(sizeof(Onyx::Maths::Matrix4x4<float>) * 1000, Onyx::Memory::DEFAULT_ALIGNMENT); // This should allocate 64000 bytes from the stack. (plus alignment requirements)
+        void* pMatrices = stack.Alloc(sizeof(Onyx::Maths::Matrix4x4<float>) * 10, Onyx::Memory::DEFAULT_ALIGNMENT); // This should allocate 64000 bytes from the stack. (plus alignment requirements)
         for (int j = 0; j < 1000; j++) {
             static_cast<Onyx::Maths::Matrix4x4<float>*>(pMatrices)[j] = {};
         }
