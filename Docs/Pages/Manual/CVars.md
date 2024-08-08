@@ -105,7 +105,10 @@ note: as data handles are stored as `void*`, they must be `reinterpret_cast` int
 
 | Console Variable | Description | Type | Default Value | 
 | - | - | - | - |
-| `Engine.Log.EnableForwarding` | Controls whether to forward log output to `stdout`, when the output stream is changed to something else. 0 to disable, 1 to enable. | `Bool` | `false` |
+| `Onyx.Log.EnableForwarding` | Controls whether to forward log output to `stdout`, when the output stream is changed to something else. 0 to disable, 1 to enable. | `Bool` | `false` |
+| `Onyx.Application.Name` | The Name of the Application. | `String` | `"Onyx-Application"` |
+| `Onyx.Window.Size.x` | The Initial Width of the Application Window. | `Int` | `600` | 
+| `Onyx.Window.Size.y` | The Initial Height of the Application Window. | `Int` | `400` |
 
 ## Editor Console Variables
 | Console Variable | Description | Type | Default Value | 

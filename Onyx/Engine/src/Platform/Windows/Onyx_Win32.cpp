@@ -1,9 +1,14 @@
 #if ONYX_PLATFORM_WINDOWS
-#include <sdkddkver.h>
+
+#include <Onyx/Platform/Platform.h>
+
+#include <Onyx/Core/Logger.h>
+#include <Onyx/Core/CVar.h>
+#include <Onyx/Core/Utility.h>
+#include <Onyx/Core/Defaults.h>
 
 //Target Windows 7 or later
 #define _WIN32_WINNT 0x0601
-
 
 //These #Defines disable unused windows features.
 //They are optional, but omitting them will increase build times.
@@ -44,12 +49,7 @@
 
 #include <windows.h>
 #include <hidusage.h>
-
-#include <Onyx/Core/Logger.h>
-#include <Onyx/Core/CVar.h>
-#include <Onyx/Core/Utility.h>
-#include <Onyx/Core/Defaults.h>
-#include <Onyx/Platform/Platform.h>
+#include <sdkddkver.h>
 #include <string> 
 
 //_ImageBase represents the module's DOS header - functionally equivalent to the HINSTANCE of the current module.
@@ -61,6 +61,9 @@ extern "C" IMAGE_DOS_HEADER __ImageBase;
 
 LRESULT __stdcall WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    //Onyx::Log::Status("Processing Message %d\n", msg); 
+
+
     switch (msg)
     {
     case WM_DESTROY:
@@ -193,6 +196,10 @@ void Onyx::Platform::Init()
     Onyx::Log::Status("[Win32]\tInitializing for Platform \"%s\".\n", Onyx::Defaults::PlatformName);
 }
 
+void Onyx::Platform::Shutdown() {
+    Onyx::Log::Status("[Win32]\tShutting Down %s Platform Backend.");
+}
+
 
 #pragma push_macro("CreateWindow")
 #undef CreateWindow
@@ -213,15 +220,16 @@ void Onyx::Platform::DestroyWindow(Onyx::Platform::WindowHandle& window)
 bool Onyx::Platform::PollEvents(Onyx::Platform::WindowHandle& window)
 {
     MSG msg{};
-    while (PeekMessage(&msg, reinterpret_cast<HWND>(window), 0, 0, PM_REMOVE)) {
-
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
         //Exit the application if a quit message has been posted.
         if (msg.message == WM_QUIT || msg.message == WM_CLOSE) {
             return false;
         }
+
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+
+
     }
 
     return true;
@@ -256,3 +264,4 @@ void* Onyx::Platform::SetMemory(void* pMem, uint8_t value, uint64_t size)
 
 
 #endif
+

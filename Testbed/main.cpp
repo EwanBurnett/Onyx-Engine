@@ -14,12 +14,14 @@ using namespace Onyx;
 int main() {
     Onyx::Init();
 
+    int b = 0; 
     Onyx::Platform::Init(); 
     Onyx::Platform::WindowHandle hwnd = Onyx::Platform::CreateWindow(); 
 
     while (Onyx::Platform::PollEvents(hwnd)) {
         static int a = 0; 
-        printf("\r%d", a++);
+        a++;
+        //printf("\r%d", a++);
     }
 
     Onyx::Platform::DestroyWindow(hwnd); 
@@ -27,7 +29,7 @@ int main() {
     printf("\n");
 
 #if ONYX_DEBUG
-    Onyx::CVarManager::Get()->SetCVar_Bool("Engine.Log.EnableForwarding", true);
+    Onyx::CVarManager::Get()->SetCVar_Bool("Onyx.Log.EnableForwarding", true);
 #endif
     FILE* logFile = fopen("Log.txt", "a+");
     Onyx::Log::SetOutputStream(logFile);
