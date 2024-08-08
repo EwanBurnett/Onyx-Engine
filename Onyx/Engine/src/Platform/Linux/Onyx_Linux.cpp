@@ -9,7 +9,7 @@
 #include <chrono> 
 
 void Onyx::Platform::Init() {
-    Onyx::Log::Status("[Linux]\tInitializing %s Platform Backend.\n", /*Onyx::Defaults::PlatformName*/ "TEST");
+    Onyx::Log::Status("[Linux]\tInitializing %s Platform Backend.\n", Onyx::Defaults::PlatformName);
     int result = glfwInit();
     if (result != GLFW_TRUE) {
         Onyx::Log::Error(__FILE__, __LINE__, __PRETTY_FUNCTION__, "Failed to initialize GLFW!\n");
