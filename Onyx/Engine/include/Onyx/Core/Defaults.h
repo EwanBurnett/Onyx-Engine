@@ -2,6 +2,7 @@
 #define ONYX_DEFAULTS_H
 
 #include "../Maths/Maths.h"
+#include <string> 
 
 namespace Onyx {
     namespace Defaults {

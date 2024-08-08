@@ -166,8 +166,9 @@ void Onyx::Log::_Output(ELogColour colour, FILE* stream, const char* fmt, va_lis
         break;
     }
 #endif
-
-    vfprintf(stream, fmt, args);
+    va_list vargs; 
+    va_copy(vargs, args);
+    vfprintf(stream, fmt, vargs);
 
     //Reset the output colour
 #if ONYX_PLATFORM_WINDOWS
