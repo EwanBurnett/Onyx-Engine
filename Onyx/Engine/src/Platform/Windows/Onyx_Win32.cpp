@@ -51,6 +51,8 @@
 #include <hidusage.h>
 #include <sdkddkver.h>
 #include <string> 
+#include <thread>
+#include <chrono>
 
 //_ImageBase represents the module's DOS header - functionally equivalent to the HINSTANCE of the current module.
 //This way, the MODULE_INSTANCE variable can represent the HINSTANCE of the module being linked to. 
@@ -182,7 +184,7 @@ HWND CreateWindow_Impl() {
 }
 
 
-void DestroyWindow_Impl(Onyx::Platform::WindowHandle& window) {
+void DestroyWindow_Impl(Onyx::WindowHandle& window) {
     HWND hwnd = reinterpret_cast<HWND>(window);
     DestroyWindow(hwnd);
 
@@ -198,41 +200,6 @@ void Onyx::Platform::Init()
 
 void Onyx::Platform::Shutdown() {
     Onyx::Log::Status("[Win32]\tShutting Down %s Platform Backend.");
-}
-
-
-#pragma push_macro("CreateWindow")
-#undef CreateWindow
-Onyx::Platform::WindowHandle Onyx::Platform::CreateWindow()
-{
-    return reinterpret_cast<WindowHandle>(CreateWindow_Impl());
-}
-#pragma pop_macro("CreateWindow")
-
-#pragma push_macro("DestroyWindow")
-#undef DestroyWindow
-void Onyx::Platform::DestroyWindow(Onyx::Platform::WindowHandle& window)
-{
-    DestroyWindow_Impl(window);
-}
-#pragma pop_macro("DestroyWindow")
-
-bool Onyx::Platform::PollEvents(Onyx::Platform::WindowHandle& window)
-{
-    MSG msg{};
-    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-        //Exit the application if a quit message has been posted.
-        if (msg.message == WM_QUIT || msg.message == WM_CLOSE) {
-            return false;
-        }
-
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-
-
-    }
-
-    return true;
 }
 
 #pragma push_macro("ZeroMemory")
@@ -263,5 +230,61 @@ void* Onyx::Platform::SetMemory(void* pMem, uint8_t value, uint64_t size)
 }
 
 
-#endif
+#pragma push_macro("CreateWindow")
+#undef CreateWindow
+Onyx::WindowHandle Onyx::Platform::CreateWindow()
+{
+    return reinterpret_cast<WindowHandle>(CreateWindow_Impl());
+}
+#pragma pop_macro("CreateWindow")
 
+#pragma push_macro("DestroyWindow")
+#undef DestroyWindow
+void Onyx::Platform::DestroyWindow(WindowHandle& window)
+{
+    DestroyWindow_Impl(window);
+}
+#pragma pop_macro("DestroyWindow")
+
+void Onyx::Platform::SetWindowTitle(WindowHandle& window, const char* title)
+{
+    HWND hwnd = reinterpret_cast<HWND>(window); 
+    SetWindowText(hwnd, title); 
+}
+
+void Onyx::Platform::SetWindowSize(WindowHandle& window, const uint32_t width, const uint32_t height)
+{
+    HWND hwnd = reinterpret_cast<HWND>(window); 
+    SetWindowPos(hwnd, nullptr, 0, 0, width, height, SWP_NOMOVE); 
+}
+
+void Onyx::Platform::SetWindowPosition(WindowHandle& window, const uint32_t x, const uint32_t y)
+{
+    HWND hwnd = reinterpret_cast<HWND>(window); 
+    SetWindowPos(hwnd, nullptr, x, y, 0, 0, SWP_NOSIZE); 
+}
+
+bool Onyx::Platform::PollEvents(Onyx::WindowHandle& window)
+{
+    MSG msg{};
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+        //Exit the application if a quit message has been posted.
+        if (msg.message == WM_QUIT || msg.message == WM_CLOSE) {
+            return false;
+        }
+
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+
+
+    }
+
+    return true;
+}
+
+void Onyx::Platform::Sleep(uint64_t milliseconds)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds)); 
+}
+
+#endif

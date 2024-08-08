@@ -10,6 +10,7 @@
 
 #include <type_traits>
 #include <cmath> 
+#include "Maths.h"
 
 namespace Onyx {
     namespace Maths {

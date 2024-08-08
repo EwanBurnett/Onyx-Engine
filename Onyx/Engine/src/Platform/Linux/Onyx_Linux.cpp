@@ -5,6 +5,8 @@
 #include <Onyx/Platform/Platform.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <thread>
+#include <chrono> 
 
 void Onyx::Platform::Init() {
     Onyx::Log::Status("[Linux]\tInitializing %s Platform Backend.\n", Onyx::Defaults::PlatformName);
@@ -15,7 +17,7 @@ void Onyx::Platform::Init() {
 }
 
 void Onyx::Platform::Shutdown() {
-    Onyx::Log::Status("[Linux]\tShutting Down %s Platform Backend.")
+    Onyx::Log::Status("[Linux]\tShutting Down %s Platform Backend.");
     glfwTerminate();
 }
 
@@ -40,19 +42,25 @@ void* Onyx::Platform::SetMemory(void* pMem, uint8_t value, uint64_t size)
     return pMem;
 }
 
-bool Onyx::Platform::PollEvents(WindowHandle& window) {
+void Onyx::Platform::SetWindowTitle(WindowHandle& window, const char* title)
+{
     GLFWwindow* pWindow = reinterpret_cast<GLFWwindow*>(window);
-
-    if (glfwWindowShouldClose(pWindow)) {
-        return false;
-    }
-
-    glfwPollEvents();
-
-    return true;
+    glfwSetWindowTitle(pWindow, title);
 }
 
-Onyx::Platform::WindowHandle Onyx::Platform::CreateWindow()
+void Onyx::Platform::SetWindowSize(WindowHandle& window, const uint32_t width, const uint32_t height)
+{
+    GLFWwindow* pWindow = reinterpret_cast<GLFWwindow*>(window);
+    glfwSetWindowSize(pWindow, width, height);
+}
+
+void Onyx::Platform::SetWindowPosition(WindowHandle& window, const uint32_t x, const uint32_t y)
+{
+    GLFWwindow* pWindow = reinterpret_cast<GLFWwindow*>(window);
+    glfwSetWindowPos(pWindow, x, y);
+}
+
+Onyx::WindowHandle Onyx::Platform::CreateWindow()
 {
     GLFWwindow* pWindow;
     std::string title = Onyx::Defaults::WindowTitle;
@@ -88,7 +96,7 @@ Onyx::Platform::WindowHandle Onyx::Platform::CreateWindow()
         }
     }
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    //glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
     pWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if (!pWindow) {
@@ -125,6 +133,24 @@ void Onyx::Platform::DestroyWindow(WindowHandle& handle) {
 
     GLFWwindow* pWindow = reinterpret_cast<GLFWwindow*>(handle);
     glfwDestroyWindow(pWindow);
+}
+
+bool Onyx::Platform::PollEvents(WindowHandle& window) {
+    GLFWwindow* pWindow = reinterpret_cast<GLFWwindow*>(window);
+
+    if (glfwWindowShouldClose(pWindow)) {
+        return false;
+    }
+
+    glfwPollEvents();
+
+    glfwSwapBuffers(pWindow); 
+    return true;
+}
+
+void Onyx::Platform::Sleep(uint64_t milliseconds)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
 #endif

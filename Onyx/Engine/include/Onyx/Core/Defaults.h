@@ -17,6 +17,10 @@ namespace Onyx {
         const uint8_t InvalidMemoryValue = 0xde;
         const uint8_t AllocatedMemoryValue = 0xff;
         const uint8_t FreedMemoryValue = 0xcc;
+
+        const Maths::Vector2<uint32_t> Resolution = { 1920, 1080 }; 
+        const uint16_t RefreshRate = 60; 
+        const bool IsFullscreen = false; 
     }
 }
 

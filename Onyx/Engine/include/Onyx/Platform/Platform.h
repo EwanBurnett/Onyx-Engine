@@ -8,17 +8,11 @@
 * @author Ewan Burnett (EwanBurnettSK@outlook.com)
 * @date 2024/08/06
 */
+#include "../Core/Types.h"
 #include <cstdint> 
 
 namespace Onyx {
     namespace Platform {
-
-        struct PlatformInfo {
-            void* pState; 
-            const char* applicationName; 
-        };
-
-        typedef uint64_t WindowHandle;  //TODO: Move into Types.h 
 
         void Init();    
         void Shutdown(); 
@@ -28,13 +22,17 @@ namespace Onyx {
         void* SetMemory(void* pMem, uint8_t value, uint64_t size); 
 
         WindowHandle CreateWindow(); 
-        void DestroyWindow(Onyx::Platform::WindowHandle& window); 
-        
-        bool PollEvents(Onyx::Platform::WindowHandle& window); 
+        void DestroyWindow(WindowHandle& window); 
 
-        void StreamOutput(); 
+        void SetWindowTitle(WindowHandle& window, const char* title);
+        void SetWindowSize(WindowHandle& window, const uint32_t width, const uint32_t height);
+        void SetWindowPosition(WindowHandle& window, const uint32_t x, const uint32_t y);
 
-        void Sleep(); 
+        void SetWindowVideoMode(WindowHandle& window, const VideoMode& mode); 
+
+        bool PollEvents(WindowHandle& window); 
+
+        void Sleep(uint64_t milliseconds); 
     }
 }
 
