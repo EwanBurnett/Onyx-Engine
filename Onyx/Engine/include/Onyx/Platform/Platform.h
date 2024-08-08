@@ -30,7 +30,7 @@ namespace Onyx {
 
         void SetWindowVideoMode(WindowHandle& window, const VideoMode& mode); 
 
-        bool PollEvents(WindowHandle& window); 
+        bool PollEvents(WindowHandle window); 
 
         void Sleep(uint64_t milliseconds); 
     }

@@ -1,6 +1,7 @@
 #include <Onyx.h>
 #include <Onyx/Platform/Platform.h>
 #include <Onyx/Core/CVar.h>
+#include <Onyx/Graphics/Window.h>
 #include <cstdio>
 #include <cstring>
 #include <cstdio>
@@ -19,21 +20,16 @@ int main() {
 
     Onyx::Platform::Init();
 
-    Onyx::WindowHandle hwnd = Onyx::Platform::CreateWindow();
-
-    Onyx::Platform::SetWindowPosition(hwnd, 300, 100);
-    Onyx::Platform::SetWindowTitle(hwnd, "Testing!");
-    Onyx::Platform::SetWindowSize(hwnd, 500, 400);
-
-    while (Onyx::Platform::PollEvents(hwnd)) {
+    Onyx::Graphics::Window window("Hello!", 400, 200, 1280, 720);
+    while (Onyx::Platform::PollEvents(window.GetHandle())) {
         static uint64_t frameIdx = 0;
         printf("\rFrame %d", frameIdx++);
         Onyx::Platform::Sleep(16);
     }
 
-    Onyx::Platform::DestroyWindow(hwnd);
 
     printf("\n");
+    window.Destroy();
 
     Onyx::Log::SetOutputStream(stdout);
     fclose(logFile);

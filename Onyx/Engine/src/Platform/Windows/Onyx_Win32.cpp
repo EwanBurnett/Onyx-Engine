@@ -264,7 +264,7 @@ void Onyx::Platform::SetWindowPosition(WindowHandle& window, const uint32_t x, c
     SetWindowPos(hwnd, nullptr, x, y, 0, 0, SWP_NOSIZE); 
 }
 
-bool Onyx::Platform::PollEvents(Onyx::WindowHandle& window)
+bool Onyx::Platform::PollEvents(Onyx::WindowHandle window)
 {
     MSG msg{};
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
