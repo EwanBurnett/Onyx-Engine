@@ -1,7 +1,14 @@
 project("Testbed")
 message(STATUS "Building Testbed Application.")
 
-add_executable(${PROJECT_NAME} main.cpp)
+set(TESTBED_SOURCES main.cpp)
+
+if(ONYX_PLATFORM_WINDOWS)
+set(TESTBED_SOURCES ${TESTBED_SOURCES} Resources.rc)
+endif()
+
+add_executable(${PROJECT_NAME} ${TESTBED_SOURCES})
+
 target_link_libraries(${PROJECT_NAME} PRIVATE Onyx-Engine)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES 

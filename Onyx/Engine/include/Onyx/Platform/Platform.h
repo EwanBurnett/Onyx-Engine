@@ -28,6 +28,10 @@ namespace Onyx {
         void SetWindowSize(WindowHandle& window, const uint32_t width, const uint32_t height);
         void SetWindowPosition(WindowHandle& window, const uint32_t x, const uint32_t y);
 
+        void SetWindowPointer(WindowHandle& window, void* pData);
+
+        void SetWindowIcon(WindowHandle& window, const char* iconPath); 
+
         void SetWindowVideoMode(WindowHandle& window, const VideoMode& mode); 
 
         bool PollEvents(WindowHandle window); 

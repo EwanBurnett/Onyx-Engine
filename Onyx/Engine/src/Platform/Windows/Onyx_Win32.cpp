@@ -44,10 +44,10 @@
 #define NOPROXYSTUB
 #define NOIMAGE
 #define NOTAPE
-
 #define NOMINMAX
 
 #include <windows.h>
+//#include <gdiplus.h>
 #include <hidusage.h>
 #include <sdkddkver.h>
 #include <string> 
@@ -63,9 +63,6 @@ extern "C" IMAGE_DOS_HEADER __ImageBase;
 
 LRESULT __stdcall WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    //Onyx::Log::Status("Processing Message %d\n", msg); 
-
-
     switch (msg)
     {
     case WM_DESTROY:
@@ -199,7 +196,7 @@ void Onyx::Platform::Init()
 }
 
 void Onyx::Platform::Shutdown() {
-    Onyx::Log::Status("[Win32]\tShutting Down %s Platform Backend.");
+    Onyx::Log::Status("[Win32]\tShutting Down %s Platform Backend.", Onyx::Defaults::PlatformName);
 }
 
 #pragma push_macro("ZeroMemory")
@@ -262,6 +259,34 @@ void Onyx::Platform::SetWindowPosition(WindowHandle& window, const uint32_t x, c
 {
     HWND hwnd = reinterpret_cast<HWND>(window); 
     SetWindowPos(hwnd, nullptr, x, y, 0, 0, SWP_NOSIZE); 
+}
+
+void Onyx::Platform::SetWindowPointer(WindowHandle& window, void* pData)
+{
+    HWND hwnd = reinterpret_cast<HWND>(window); 
+    SetWindowLongPtr(hwnd, 0, reinterpret_cast<LONG_PTR>(pData)); 
+}
+
+
+void Onyx::Platform::SetWindowIcon(WindowHandle& window, const char* iconPath)
+{
+    HWND hwnd = reinterpret_cast<HWND>(window); 
+
+    HANDLE hIcon = LoadImage(nullptr, iconPath, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE); 
+    if (hIcon == nullptr) {
+        Log::Failure("[Win32]\tFailed to Load Icon %s!\n", iconPath); 
+        return; 
+    }
+
+    Log::Success("[Win32]\tSetting Icon %s.\n", iconPath); 
+
+    //Update the icon via a Window message. 
+    SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+    SendMessage(GetWindow(hwnd, GW_OWNER), WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+    SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+    SendMessage(GetWindow(hwnd, GW_OWNER), WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+
+    return; 
 }
 
 bool Onyx::Platform::PollEvents(Onyx::WindowHandle window)

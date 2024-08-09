@@ -34,6 +34,8 @@ void Onyx::Graphics::Window::Create(const char* title, const int posX, const int
     SetTitle(m_Title);
     SetPosition(m_Position); 
     SetSize(m_Size); 
+
+    Platform::SetWindowPointer(m_Handle, this); 
 }
 
 void Onyx::Graphics::Window::Destroy()

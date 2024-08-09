@@ -60,6 +60,18 @@ void Onyx::Platform::SetWindowPosition(WindowHandle& window, const uint32_t x, c
     glfwSetWindowPos(pWindow, x, y);
 }
 
+
+void Onyx::Platform::SetWindowPointer(WindowHandle& window, void* pData)
+{
+    GLFWwindow* pWindow = reinterpret_cast<GLFWwindow*>(window);
+    glfwSetWindowUserPointer(pWindow, pData);
+}
+
+void Onyx::Platform::SetWindowIcon(WindowHandle& window, const char* iconPath)
+{
+    //TODO: Implement 
+}
+
 Onyx::WindowHandle Onyx::Platform::CreateWindow()
 {
     GLFWwindow* pWindow;
@@ -98,6 +110,7 @@ Onyx::WindowHandle Onyx::Platform::CreateWindow()
 
     //glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
+    glfwSetWindowIcon()
     pWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if (!pWindow) {
         Onyx::Log::Fatal(__FILE__, __LINE__, __PRETTY_FUNCTION__, "GLFW Window Creation Failed!\n");
