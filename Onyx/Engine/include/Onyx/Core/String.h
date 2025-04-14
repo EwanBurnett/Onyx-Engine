@@ -1,6 +1,12 @@
 #ifndef ONYX_CORE_STRING_H
 #define ONYX_CORE_STRING_H
-
+/**
+* @file String.h
+*
+* ------------------------------------------
+* @author Ewan Burnett (EwanBurnettSK@outlook.com)
+* @date 2024/08/09
+*/
 #include "Logger.h"
 #include <string> 
 #include <cstdarg> 

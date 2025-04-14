@@ -1,6 +1,12 @@
-#ifndef ONYX_DEFAULTS_H
-#define ONYX_DEFAULTS_H
-
+#ifndef ONYX_CORE_DEFAULTS_H
+#define ONYX_CORE_DEFAULTS_H
+/**
+* @file Defaults.h
+*
+* ------------------------------------------
+* @author Ewan Burnett (EwanBurnettSK@outlook.com)
+* @date 2024/08/08
+*/
 #include "../Maths/Maths.h"
 #include <string> 
 

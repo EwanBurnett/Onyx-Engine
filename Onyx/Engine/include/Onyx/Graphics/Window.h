@@ -1,5 +1,13 @@
 #ifndef ONYX_GRAPHICS_WINDOW_H
 #define ONYX_GRAPHICS_WINDOW_H
+/**
+* @file Window.h
+*
+* ------------------------------------------
+* @author Ewan Burnett (EwanBurnettSK@outlook.com)
+* @date 2024/08/08
+*/
+
 #include "../Maths/Vector2.h"
 #include "Onyx/Core/Types.h"
 #include <cstdint> 

@@ -1,6 +1,12 @@
 #ifndef ONYX_CORE_UTILITY_H
 #define ONYX_CORE_UTILITY_H
-
+/**
+* @file Utility.h
+*
+* ------------------------------------------
+* @author Ewan Burnett (EwanBurnettSK@outlook.com)
+* @date 2024/08/09
+*/
 #ifdef _MSC_VER
 #define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif

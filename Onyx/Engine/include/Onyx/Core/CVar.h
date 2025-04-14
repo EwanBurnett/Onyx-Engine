@@ -8,7 +8,7 @@
 *
 * ------------------------------------------
 * @author Ewan Burnett(EwanBurnettSK@Outlook.com)
-* @date 2024 - 07 - 20
+* @date 2024/07/20
 */
 
 #include <cstdint>

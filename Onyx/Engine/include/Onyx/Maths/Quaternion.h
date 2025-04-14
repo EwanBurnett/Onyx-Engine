@@ -1,6 +1,12 @@
 #ifndef ONYX_MATHS_QUATERNION_H
 #define ONYX_MATHS_QUATERNION_H
-
+/**
+* @file Quaternion.h
+*
+* ------------------------------------------
+* @author Ewan Burnett (EwanBurnettSK@outlook.com)
+* @date 2024/07/21
+*/
 #include "Vector3.h"
 #include "Vector4.h"
 

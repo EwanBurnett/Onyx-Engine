@@ -6,6 +6,21 @@
 #include <cstring>
 #include <cstdio>
 #include <Onyx/Core/String.h>
+#include <Onyx/Core/Timer.h>
+#include <Onyx/Core/Event.h>
+
+enum class EEvents {
+    L, 
+};
+class TestEvent : public Onyx::Event<EEvents>
+{
+public: 
+    TestEvent() : Event<EEvents>(EEvents::L, "Debug Event") {}; 
+    virtual ~TestEvent() {}
+
+    int width = 0; 
+    int height = 0; 
+};
 
 using namespace Onyx;
 
@@ -28,12 +43,35 @@ int main() {
     auto h = window.GetHandle();
     Onyx::Platform::SetWindowIcon(h, "../../../../Resources/Onyx_Icon_256x256.ico");
 
+    Onyx::Timer timer;
+    timer.Reset();
+    timer.Start();
+
+    Onyx::EventDispatcher<
+
     while (Onyx::Platform::PollEvents(window.GetHandle())) {
         static uint64_t frameIdx = 0;
-        printf("\rFrame %d", frameIdx++);
-        title.Format("Frame %d    Testbed - Onyx %s", frameIdx++, Onyx::GetVersionString().c_str());
-        Onyx::Platform::SetWindowTitle(h, title.c_str()); 
-        Onyx::Platform::Sleep(16);
+        frameIdx++; 
+
+        static double acc = 0.0;
+        timer.Tick();
+        double dtms = timer.DeltaTime();
+        acc += dtms;
+
+        if (acc >= (1.0 / 20.0)) {
+            acc = 0.0;
+
+            const uint64_t fps = 1.0 / dtms; 
+            Onyx::Log::Print("\r                                         "); 
+            Onyx::Log::Print("\rFrame %d\t%8.8fms\t%dfps", frameIdx, dtms, fps);
+            title.Format("%d FPS - Testbed - Onyx %s", fps, Onyx::GetVersionString().c_str());
+            Onyx::Platform::SetWindowTitle(h, title.c_str());
+        }
+         
+        if (dtms < (1.0 / 60.0)) {
+            uint64_t sleepTimeMS = static_cast<uint64_t>(((1.0 / 60.0) - dtms) * 1000.0);
+            Onyx::Platform::Sleep(sleepTimeMS);
+        }
     }
 
 

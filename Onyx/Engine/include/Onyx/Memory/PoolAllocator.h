@@ -1,12 +1,12 @@
 #ifndef ONYX_MEMORY_POOL_ALLOCATOR_H
 #define ONYX_MEMORY_POOL_ALLOCATOR_H
 /**
-* @file StackAllocator.h
-* @brief Stack Allocator
+* @file PoolAllocator.h
+* @brief Pool Allocator
 *
 * ------------------------------------------
 * @author Ewan Burnett(EwanBurnettSK@Outlook.com)
-* @date 2024 - 08 - 01
+* @date 2024/08/01
 */
 #include "Memory.h"
 #include <cstdint> 
