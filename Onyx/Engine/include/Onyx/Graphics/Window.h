@@ -23,8 +23,8 @@ namespace Onyx {
             void Destroy(); 
 
             void SetPosition(int x, int y); 
-            void SetPosition(Maths::Vector2<int> position); 
-            Maths::Vector2<int> GetPosition() const; 
+            void SetPosition(Maths::Vector2i position); 
+            Maths::Vector2i GetPosition() const; 
 
             void SetSize(uint32_t width, uint32_t height); 
             void SetSize(Maths::Vector2<uint32_t> size); 
@@ -37,7 +37,7 @@ namespace Onyx {
 
         private:
             const char* m_Title; 
-            Maths::Vector2<int> m_Position; 
+            Maths::Vector2i m_Position; 
             Maths::Vector2<uint32_t> m_Size; 
             WindowHandle m_Handle; 
         };

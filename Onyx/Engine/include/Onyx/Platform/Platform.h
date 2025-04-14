@@ -17,26 +17,27 @@ namespace Onyx {
         void Init();    
         void Shutdown(); 
 
+        //OS Methods
+        void Sleep(uint64_t milliseconds); 
+
         void* ZeroMemory(void* pMem, uint64_t size); 
         void* CopyMemory(void* pDst, void* pSrc, uint64_t size);
         void* SetMemory(void* pMem, uint8_t value, uint64_t size); 
 
+        //Windowing 
         WindowHandle CreateWindow(); 
         void DestroyWindow(WindowHandle& window); 
-
         void SetWindowTitle(WindowHandle& window, const char* title);
         void SetWindowSize(WindowHandle& window, const uint32_t width, const uint32_t height);
         void SetWindowPosition(WindowHandle& window, const uint32_t x, const uint32_t y);
-
         void SetWindowPointer(WindowHandle& window, void* pData);
-
         void SetWindowIcon(WindowHandle& window, const char* iconPath); 
-
         void SetWindowVideoMode(WindowHandle& window, const VideoMode& mode); 
 
         bool PollEvents(WindowHandle window); 
 
-        void Sleep(uint64_t milliseconds); 
+        Maths::Vector2<uint32_t> GetMonitorSize(const uint32_t index); 
+
     }
 }
 

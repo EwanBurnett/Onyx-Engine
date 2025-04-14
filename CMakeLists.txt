@@ -29,26 +29,15 @@ endif()
 add_compile_definitions($<$<CONFIG:DEBUG>:ONYX_DEBUG>)  # Define ONYX_DEBUG for debug configurations. 
 set(CMAKE_CXX_STANDARD 17)
 
-file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/lib") # Library output directory
-file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/bin") # Binary output directory
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/lib/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/lib/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/)
 
 set(CMAKE_DEBUG_POSTFIX "d") 
 
 # Build the Engine
 add_subdirectory("${CMAKE_SOURCE_DIR}/Onyx/")
-add_subdirectory("${CMAKE_SOURCE_DIR}/Tests/")
 add_subdirectory("${CMAKE_SOURCE_DIR}/Tools/")
-if(ONYX_BUILD_TESTBED)
-    add_subdirectory("${CMAKE_SOURCE_DIR}/Testbed/")
-endif()
-add_subdirectory("${CMAKE_SOURCE_DIR}/Samples/")
-
-
-# add_custom_target(UpdateVersionHash COMMAND ${CMAKE_COMMAND} -Dpre_configure_dir=${pre_configure_dir} -Dpost_configure_file=${post_configure_dir} -P "${CMAKE_SOURCE_DIR}/CMake/CheckGitHash.cmake" BYPRODUCTS ${post_configure_file})
 
 # Optionally generate Documentation files
 if(ONYX_BUILD_DOCS)

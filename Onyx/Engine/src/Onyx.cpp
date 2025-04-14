@@ -11,3 +11,7 @@ void Onyx::Init()
     AutoCVar_Int("Onyx.Window.Size.x", "The Initial Width of the Application Window.", 600);
     AutoCVar_Int("Onyx.Window.Size.y", "The Initial Height of the Application Window.", 400);
 }
+
+void Onyx::Shutdown() {
+    Onyx::Log::Status("Terminating Onyx..."); 
+}

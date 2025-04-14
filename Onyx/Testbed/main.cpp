@@ -41,13 +41,13 @@ int main() {
 
     Onyx::Graphics::Window window(title.c_str(), 400, 200, 1280, 720);
     auto h = window.GetHandle();
-    Onyx::Platform::SetWindowIcon(h, "../../../../Resources/Onyx_Icon_256x256.ico");
+    Onyx::Platform::SetWindowIcon(h, "Resources/Onyx_Icon_256x256.ico");
 
     Onyx::Timer timer;
     timer.Reset();
     timer.Start();
+    int a = 0; 
 
-    Onyx::EventDispatcher<
 
     while (Onyx::Platform::PollEvents(window.GetHandle())) {
         static uint64_t frameIdx = 0;
@@ -68,10 +68,12 @@ int main() {
             Onyx::Platform::SetWindowTitle(h, title.c_str());
         }
          
+        /*
         if (dtms < (1.0 / 60.0)) {
             uint64_t sleepTimeMS = static_cast<uint64_t>(((1.0 / 60.0) - dtms) * 1000.0);
             Onyx::Platform::Sleep(sleepTimeMS);
         }
+        */
     }
 
 

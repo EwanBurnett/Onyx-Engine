@@ -108,9 +108,9 @@ Onyx::WindowHandle Onyx::Platform::CreateWindow()
         }
     }
 
-    //glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-    glfwSetWindowIcon()
+    //glfwSetWindowIcon()
     pWindow = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if (!pWindow) {
         Onyx::Log::Fatal(__FILE__, __LINE__, __PRETTY_FUNCTION__, "GLFW Window Creation Failed!\n");

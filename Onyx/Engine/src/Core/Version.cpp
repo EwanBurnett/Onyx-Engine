@@ -8,7 +8,7 @@
 #include <cstdio>
 
 namespace Onyx{
-    const int ONYX_GIT_HASH = 0x89dabe5;
+    const int ONYX_GIT_HASH = 0x3001c90;
     const int ONYX_VERSION_MAJOR = 0;
     const int ONYX_VERSION_MINOR = 0;
     const int ONYX_VERSION_ISSUE = 5;
@@ -16,7 +16,11 @@ namespace Onyx{
 
 std::string Onyx::GetVersionString(){
     char buffer[0xff]; 
+#if ONYX_PLATFORM_WINDOWS
+    sprintf_s(buffer, 0xff, "v%d.%d.%d Hash[0x%x]", ONYX_VERSION_MAJOR, ONYX_VERSION_MINOR, ONYX_VERSION_ISSUE, ONYX_GIT_HASH); 
+#else
     sprintf(buffer, "v%d.%d.%d Hash[0x%x]", ONYX_VERSION_MAJOR, ONYX_VERSION_MINOR, ONYX_VERSION_ISSUE, ONYX_GIT_HASH);
+#endif
 
     return buffer; 
 }

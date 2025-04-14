@@ -301,7 +301,6 @@ bool Onyx::Platform::PollEvents(Onyx::WindowHandle window)
         TranslateMessage(&msg);
         DispatchMessage(&msg);
 
-
     }
 
     return true;

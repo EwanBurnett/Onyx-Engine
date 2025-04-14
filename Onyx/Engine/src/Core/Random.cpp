@@ -1,6 +1,6 @@
 #include "Onyx/Core/Random.h"
 
-Onyx::RNG::RNG(const uint64_t seed) {
+Onyx::RNG::RNG(const uint32_t seed) {
     if (seed == 0) {
         std::random_device rd;
         m_RNG = std::mt19937(rd()); //Seed using a hardware generated random number    

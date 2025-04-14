@@ -14,5 +14,6 @@
 
 namespace Onyx {
     void Init(); 
+    void Shutdown(); 
 }
 #endif

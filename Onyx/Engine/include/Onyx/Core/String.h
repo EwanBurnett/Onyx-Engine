@@ -18,7 +18,7 @@ namespace Onyx {
         String(const char* fmt); 
         template<typename ... Args> 
         String(const char* fmt, Args ... args) {
-            Format(fmt, args...)
+            Format(fmt, args...);
         }
         
         uint64_t Hash(); 

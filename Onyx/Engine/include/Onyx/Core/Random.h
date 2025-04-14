@@ -21,7 +21,7 @@ namespace Onyx {
          * @brief Initializes the Random Number Generator.
          * @param seed optional RNG seed
         */
-        RNG(const uint64_t seed = 0);
+        RNG(const uint32_t seed = 0);
 
         /**
          * @brief Retrieve a random number.

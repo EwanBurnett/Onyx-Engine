@@ -13,15 +13,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(glfw)
 
-add_library(${PROJECT_NAME} STATIC "src/Onyx.cpp" "src/Core/Version.cpp" "include/Onyx/Core/Logger.h" "src/Core/Logger.cpp" "include/Onyx/Core/Utility.h" "src/Core/Utility.cpp" "include/Onyx/Core/CVar.h" "src/Core/CVar.cpp" "include/Onyx/Core/Random.h" "src/Core/Random.cpp" "include/Onyx/Core/Timer.h" "src/Core/Timer.cpp" "include/Onyx/Maths/Quaternion.h" "src/Maths/Quaternion.cpp" "include/Onyx/Memory/StackAllocator.h" "src/Memory/StackAllocator.cpp" "include/Onyx/Memory/Memory.h" "include/Onyx/Memory/PoolAllocator.h" "src/Memory/PoolAllocator.cpp" "include/Onyx/Platform/Platform.h" "include/Onyx/Core/Defaults.h" "src/Platform/Linux/Onyx_Linux.cpp" "src/Platform/Windows/Onyx_Win32.cpp" "include/Onyx/Core/Types.h" "include/Onyx/Graphics/Window.h" "src/Graphics/Window.cpp" "include/Onyx/Core/String.h" "src/Core/String.cpp" "include/Event.h" )
+add_library(${PROJECT_NAME} STATIC "src/Onyx.cpp" "src/Core/Version.cpp" "include/Onyx/Core/Logger.h" "src/Core/Logger.cpp" "include/Onyx/Core/Utility.h" "src/Core/Utility.cpp" "include/Onyx/Core/CVar.h" "src/Core/CVar.cpp" "include/Onyx/Core/Random.h" "src/Core/Random.cpp" "include/Onyx/Core/Timer.h" "src/Core/Timer.cpp" "include/Onyx/Maths/Quaternion.h" "src/Maths/Quaternion.cpp" "include/Onyx/Memory/StackAllocator.h" "src/Memory/StackAllocator.cpp" "include/Onyx/Memory/Memory.h" "include/Onyx/Memory/PoolAllocator.h" "src/Memory/PoolAllocator.cpp" "include/Onyx/Platform/Platform.h" "include/Onyx/Core/Defaults.h" "src/Platform/Linux/Onyx_Linux.cpp" "src/Platform/Windows/Onyx_Win32.cpp" "include/Onyx/Core/Types.h" "include/Onyx/Graphics/Window.h" "src/Graphics/Window.cpp" "include/Onyx/Core/String.h" "src/Core/String.cpp" "include/Onyx/Core/Event.h" )
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 
 set(ONYX_ENGINE_COMPILE_DEFINITIONS )
 
 if(ONYX_PLATFORM_LINUX)
-    set(ONYX_ENGINE_COMPILE_DEFINITIONS ${ONYX_ENGINE_COMPILE_DEFINITIONS} ONYX_PLATFORM_LINUX=1)
+    set(ONYX_ENGINE_COMPILE_DEFINITIONS ${ONYX_ENGINE_COMPILE_DEFINITIONS} ONYX_PLATFORM_LINUX=1 _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 elseif(ONYX_PLATFORM_WINDOWS)
-    set(ONYX_ENGINE_COMPILE_DEFINITIONS ${ONYX_ENGINE_COMPILE_DEFINITIONS} ONYX_PLATFORM_WINDOWS=1)
+    set(ONYX_ENGINE_COMPILE_DEFINITIONS ${ONYX_ENGINE_COMPILE_DEFINITIONS} ONYX_PLATFORM_WINDOWS=1 _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC ${ONYX_ENGINE_COMPILE_DEFINITIONS})

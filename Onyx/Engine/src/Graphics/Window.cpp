@@ -49,13 +49,13 @@ void Onyx::Graphics::Window::SetPosition(int x, int y)
     Platform::SetWindowPosition(m_Handle, x, y); 
 }
 
-void Onyx::Graphics::Window::SetPosition(Maths::Vector2<int> position)
+void Onyx::Graphics::Window::SetPosition(Maths::Vector2i position)
 {
     m_Position = position; 
     Platform::SetWindowPosition(m_Handle, position.x, position.y); 
 }
 
-Onyx::Maths::Vector2<int> Onyx::Graphics::Window::GetPosition() const
+Onyx::Maths::Vector2i Onyx::Graphics::Window::GetPosition() const
 {
     return m_Position; 
 }
