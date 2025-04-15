@@ -57,6 +57,12 @@ namespace Onyx {
             m_Listeners[type].push_back(function); 
         }
 
+        inline void ProcessEvent(T type) {
+            for (auto& listener : m_Listeners[type]) {
+                //listener(); 
+            }
+        }
+
     private:
         std::unordered_map<T, std::vector<Func>> m_Listeners;
     };

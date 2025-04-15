@@ -20,11 +20,19 @@ namespace Onyx
      * @return The current Engine Version, formatted as v[MAJOR].[MINOR].[ISSUE][GIT HASH].
     */
     std::string GetVersionString();
+    
+    /**
+     * @brief Returns the current Branch name. 
+     * @return 
+     */
+    std::string GetBranchName(); 
 
     extern const int ONYX_VERSION_MAJOR;    //v[MAJOR].x.x [xxxx]
     extern const int ONYX_VERSION_MINOR;    //vx.[MINOR].x [xxxx]
     extern const int ONYX_VERSION_ISSUE;    //vx.x.[ISSUE] [xxxx]
     extern const int ONYX_GIT_HASH;         //vx.x.x [HASH]
+
+    extern const char* ONYX_GIT_BRANCH;     //branch name
 }
 
 #endif

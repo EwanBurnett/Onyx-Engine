@@ -8,6 +8,7 @@
 #include <Onyx/Core/String.h>
 #include <Onyx/Core/Timer.h>
 #include <Onyx/Core/Event.h>
+#include <Onyx/Memory/PoolAllocator.h>
 
 enum class EEvents {
     L, 
@@ -21,6 +22,10 @@ public:
     int width = 0; 
     int height = 0; 
 };
+
+void Foo(Onyx::Event<EEvents> event) {
+    Onyx::Log::Status("Foo!\n"); 
+}
 
 using namespace Onyx;
 
@@ -37,16 +42,18 @@ int main() {
     Onyx::Platform::Init();
 
     Onyx::String title;
-    title.Format("Testbed - Onyx %s", Onyx::GetVersionString().c_str());
+    title.Format("Testbed - Onyx [%s] %s", Onyx::GetBranchName().c_str(), Onyx::GetVersionString().c_str());
 
     Onyx::Graphics::Window window(title.c_str(), 400, 200, 1280, 720);
     auto h = window.GetHandle();
     Onyx::Platform::SetWindowIcon(h, "Resources/Onyx_Icon_256x256.ico");
-
+ 
     Onyx::Timer timer;
     timer.Reset();
     timer.Start();
-    int a = 0; 
+
+    Onyx::EventDispatcher<EEvents> dispatcher; //TODO: I hate this interface! Refactor!                                                                                                                                                                                                
+    dispatcher.AddListener(EEvents::L, Foo);
 
 
     while (Onyx::Platform::PollEvents(window.GetHandle())) {
@@ -64,7 +71,7 @@ int main() {
             const uint64_t fps = 1.0 / dtms; 
             Onyx::Log::Print("\r                                         "); 
             Onyx::Log::Print("\rFrame %d\t%8.8fms\t%dfps", frameIdx, dtms, fps);
-            title.Format("%d FPS - Testbed - Onyx %s", fps, Onyx::GetVersionString().c_str());
+            title.Format("%d FPS - Testbed - Onyx [%s] %s", fps, Onyx::GetBranchName().c_str(), Onyx::GetVersionString().c_str());
             Onyx::Platform::SetWindowTitle(h, title.c_str());
         }
          

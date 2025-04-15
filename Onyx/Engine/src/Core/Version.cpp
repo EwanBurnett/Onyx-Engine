@@ -8,10 +8,12 @@
 #include <cstdio>
 
 namespace Onyx{
-    const int ONYX_GIT_HASH = 0x3001c90;
+    const int ONYX_GIT_HASH = 0xb23dfd8;
     const int ONYX_VERSION_MAJOR = 0;
     const int ONYX_VERSION_MINOR = 0;
     const int ONYX_VERSION_ISSUE = 5;
+
+    const char* ONYX_GIT_BRANCH = "dev";
 }
 
 std::string Onyx::GetVersionString(){
@@ -23,4 +25,8 @@ std::string Onyx::GetVersionString(){
 #endif
 
     return buffer; 
+}
+
+std::string Onyx::GetBranchName(){ 
+    return ONYX_GIT_BRANCH; 
 }

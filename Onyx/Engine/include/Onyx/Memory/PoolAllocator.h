@@ -30,10 +30,13 @@ namespace Onyx {
 
             uint64_t Size() const; 
             uint64_t NumAllocated() const; 
+            uint64_t ChunkSize() const; 
+            uint64_t NumChunks() const; 
 
         private:
             uint64_t m_TotalChunks; 
             uint64_t m_AllocatedChunks; 
+            uint64_t m_ChunkSize; 
             Chunk* m_pAlloc; 
             Chunk* m_pBegin; 
             bool m_bIsInPlace; 

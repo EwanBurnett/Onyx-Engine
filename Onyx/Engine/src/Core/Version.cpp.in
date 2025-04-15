@@ -12,6 +12,8 @@ namespace Onyx{
     const int ONYX_VERSION_MAJOR = @ONYX_VERSION_MAJOR@;
     const int ONYX_VERSION_MINOR = @ONYX_VERSION_MINOR@;
     const int ONYX_VERSION_ISSUE = @ONYX_VERSION_ISSUE@;
+
+    const char* ONYX_GIT_BRANCH = "@GIT_BRANCH_NAME@";
 }
 
 std::string Onyx::GetVersionString(){
@@ -23,4 +25,8 @@ std::string Onyx::GetVersionString(){
 #endif
 
     return buffer; 
+}
+
+std::string Onyx::GetBranchName(){ 
+    return ONYX_GIT_BRANCH; 
 }
